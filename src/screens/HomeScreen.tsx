@@ -2,9 +2,11 @@ import React, {useState} from 'react';
 import { View, 
          Modal, 
          TouchableOpacity, 
-         Text, 
+         Text,
+         TextInput,
          Button,
          StyleSheet } from 'react-native';
+import { Entypo } from '@expo/vector-icons';
 
 const HomeScreen = () => {
 
@@ -19,18 +21,23 @@ const HomeScreen = () => {
         transparent={false}
         onRequestClose={()=>{ setModalVisible(false)}}
       >
-        <View style={{backgroundColor:'black'}}>
-          <Text>Hello Modal</Text>
-
-          <Button
-            color='red'
-            title='Close Modal'
+        <View style={ styles.modalView } >
+          <Entypo
+            name='cross'
+            style={ styles.modalIcon }
+            size={50}
             onPress={()=>{ setModalVisible(false)}}
           />
+
+          <TextInput 
+            placeholder='Type Amount'
+            placeholderTextColor='#242320'
+            keyboardType='numeric'
+            style={ styles.modalTextInput } 
+          />
+
         </View>
       </Modal>
-
-
 
       <TouchableOpacity 
         style={{ flexDirection : 'row'}}
@@ -53,6 +60,33 @@ const styles = StyleSheet.create({
     backgroundColor : 'white',
     padding : 10,
     paddingTop : 20,
+  },
+
+  modalView : {
+    backgroundColor:'#ebe6df',
+    flex : 1,
+    //justifyContent : 'center',
+    alignSelf : 'stretch',
+  },
+
+  modalIcon : {
+    alignSelf : 'flex-end',
+  },
+
+  modalText : {
+    fontSize : 40,
+    textAlign : 'center',
+    color : 'white',
+  },
+
+  modalTextInput : {
+    fontSize : 40,
+    textAlign : 'center',
+    padding : 20,
+    borderBottomWidth : 2,
+    borderEndColor : 'black',
+    margin : 20,
+    color : 'black',
   },
 
   signBgStyle : {
