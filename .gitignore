@@ -22,7 +22,7 @@ buck-out/
 *.keystore
 
 #Vim
-.swp
+*.swp
 
 # Fastlane
 #
