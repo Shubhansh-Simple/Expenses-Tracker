@@ -28,7 +28,7 @@ const HomeScreen = ({navigation}) => {
     global.db.transaction( tx =>{
       tx.executeSql( readingPocketQuery,
         null,
-        (_,{ rows:{ _array }})=>{ setCurrentBal( _array[0].currentBal )},
+        (_,{ rows:{ _array }})=>{ setCurrentBal( _array[0].currentBal+0 )},
         ()=>{console.log('Failed to read pocket.')},
       )
     })
