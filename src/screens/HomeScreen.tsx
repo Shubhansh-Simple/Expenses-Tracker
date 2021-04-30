@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import { View, 
          Modal, 
          TouchableOpacity, 
@@ -8,11 +8,54 @@ import { View,
          StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
 
-  const [ inputText, setInputText ] = useState('');
-  const [ errorText, errorTextSet ] = useState('Default Error for styling');
+  // REACT STATE 
+  const [ inputText, setInputText ]       = useState('');
+  const [ currentBal, setCurrentBal ]     = useState(0);
+  const [ errorText, errorTextSet ]       = useState('Default Error Style');
   const [ modalVisible, setModalVisible ] = useState(false);
+
+  // QUERIES
+  let readingPocketQuery : string  = 'SELECT currentBal FROM Pocket WHERE ID=1'
+
+  const readingPocket = () => {
+    /*
+     * READING Pocket
+     * table
+     * */
+
+    global.db.transaction( tx =>{
+      tx.executeSql( readingPocketQuery,
+        null,
+        (_,{ rows:{ _array }})=>{ setCurrentBal( _array[0].currentBal )},
+        ()=>{console.log('Failed to read pocket.')},
+      )
+    })
+  }
+
+  const incrementPocket = ( valueAdd : number ) => {
+    /*
+     * ADDING balance to 
+     * current balance
+     * */
+
+    global.db.transaction( tx =>{
+      tx.executeSql( 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)',
+                     [currentBal + valueAdd],
+                     (_,txdb)=>{
+                         setCurrentBal( currentBal + valueAdd )
+                         console.log('Inserted data successfully.'),
+                         setModalVisible(false) 
+                        },
+                   )
+    })
+  }
+
+  useEffect( ()=>{
+    readingPocket()
+  },[])
+
 
   return (
     <View style={styles.homeStyle} >
@@ -48,7 +91,9 @@ const HomeScreen = () => {
 
 
           <TouchableOpacity 
-            onPress={()=>{console.log('Value you submit is - ',inputText) }}
+            onPress={()=>{
+                incrementPocket(+inputText) 
+            }}
           >
             <View style={ styles.modalSubmitBtn } >
               <Text style={ styles.modalSubmitBtnText} >Submit</Text>
@@ -70,6 +115,13 @@ const HomeScreen = () => {
 
       </TouchableOpacity>
 
+      <Button title='Navigate' 
+              onPress={ ()=>{ navigation.navigate('reading') }} />
+
+      <Text style={ styles.currentBalStyle }> 
+        Current Balance - {currentBal} Rs
+      </Text>
+
     </View>
   )
 };
@@ -82,6 +134,12 @@ const styles = StyleSheet.create({
     backgroundColor : 'white',
     padding : 10,
     paddingTop : 30,
+  },
+  
+  currentBalStyle : {
+    fontSize : 25,
+    color : 'black',
+    alignSelf : 'center',
   },
 
   // ----MODAL STARTS---

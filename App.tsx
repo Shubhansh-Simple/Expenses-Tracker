@@ -8,9 +8,10 @@ import * as SQLite from 'expo-sqlite';
 
 // LOCAL
 import HomeScreen from './src/screens/HomeScreen';
+import ReadDatabaseScreen from './src/screens/ReadDatabaseScreen';
 
-const db = SQLite.openDatabase('database.db')
 
+global.db = SQLite.openDatabase('database.db');
 const Stack = createStackNavigator()
 
 export default () => {
@@ -23,9 +24,11 @@ export default () => {
      * 
      * */
 
-    db.transaction( tx=>{
+   let createTableQuery : string = 'CREATE TABLE IF NOT EXISTS "Pocket" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "currentBal" smallint unsigned NOT NULL CHECK ("currentBal" >= 0));' 
+
+    global.db.transaction( tx=>{
       tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS "Demo_data" ( "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "first_name" varchar(20) NOT NULL, "last_name" varchar(20) NOT NULL );',
+        createTableQuery,
         null,
         ()=>{console.log('SQL Table created successfully.')},
         ()=>{console.log('Failed to created SQL Table.')},
@@ -52,6 +55,12 @@ export default () => {
         <Stack.Screen
           name='home'
           component={HomeScreen}
+          options={ {title:'Laxmi Manager'}}
+        />
+
+       <Stack.Screen
+          name='reading'
+          component={ReadDatabaseScreen}
           options={ {title:'Laxmi Manager'}}
         />
 
