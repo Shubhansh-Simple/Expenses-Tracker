@@ -7,11 +7,13 @@ import { View,
          Button,
          StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+import ButtonSection from '../components/ButtonSection';
 
 const HomeScreen = ({navigation}) => {
 
   // REACT STATE 
-  const [ inputText, setInputText ]       = useState('');
+  const [ inputText, setInputText]        = useState('');
+  const [ inputAmount, setInputAmount ]   = useState('');
   const [ currentBal, setCurrentBal ]     = useState(0);
   const [ errorText, errorTextSet ]       = useState('Default Error Style');
   const [ modalVisible, setModalVisible ] = useState(false);
@@ -19,6 +21,7 @@ const HomeScreen = ({navigation}) => {
   // QUERIES
   let readingPocketQuery : string  = 'SELECT currentBal FROM Pocket WHERE ID=1'
 
+  // DATABASE SECTION STARTS
   const readingPocket = () => {
     /*
      * READING Pocket
@@ -51,8 +54,14 @@ const HomeScreen = ({navigation}) => {
                    )
     })
   }
+  // DATABASE SECTION ENDS 
 
   useEffect( ()=>{
+  /*
+   * FIRST THING HAPPEN
+   * AFTER LOADING
+   * THIS SCREEN
+   */
     readingPocket()
   },[])
 
@@ -79,20 +88,30 @@ const HomeScreen = ({navigation}) => {
             placeholder='Type Amount'
             placeholderTextColor='#242320'
             keyboardType='numeric'
+            value={inputAmount}
+            onChangeText={inputValue=>{setInputAmount(inputValue)}}
+            style={ styles.modalAmountInput } 
+          />
+
+          <TextInput 
+            placeholder='Description'
+            placeholderTextColor='#242320'
             value={inputText}
             onChangeText={inputValue=>{setInputText(inputValue)}}
+            autoCorrect={false}
             style={ styles.modalTextInput } 
           />
 
           {/*ERROR*/}
           { true ? 
             <Text style={ styles.errorStyle }>({errorText})</Text> :
-            null }
+            null 
+          }
 
-
+          {/* MODAL SUBMIT BUTTON */}
           <TouchableOpacity 
             onPress={()=>{
-                incrementPocket(+inputText) 
+                incrementPocket(+inputAmount) 
             }}
           >
             <View style={ styles.modalSubmitBtn } >
@@ -105,15 +124,25 @@ const HomeScreen = ({navigation}) => {
       </Modal>
       {/* MODAL ENDS */}
 
-      <TouchableOpacity 
-        style={{ flexDirection : 'row'}}
-        onPress={()=>{ setModalVisible(true) }}
-      >
-        <View style={ styles.signBgStyle} >
-          <Text style={ styles.signStyle} >+</Text>
-        </View>
 
-      </TouchableOpacity>
+      {/* MAIN BUTTON SECTION STARTS */}
+
+      <View style={{ flexDirection:'row',alignItems:'stretch'}}>
+
+        <ButtonSection 
+          btnColor='#3ea832' 
+          btnText='+' 
+          callModal={(bool)=>{ setModalVisible(bool) }} 
+        />
+
+        <ButtonSection 
+          btnColor='#ff0022' 
+          btnText='-' 
+          callModal={(bool)=>{ setModalVisible(bool) }} 
+        />
+      </View>
+
+      {/* MAIN BUTTON SECTION ENDS */}
 
       <Button title='Navigate' 
               onPress={ ()=>{ navigation.navigate('reading') }} />
@@ -130,7 +159,7 @@ const styles = StyleSheet.create({
 
   homeStyle : {
     flex : 1,
-    alignItems : 'flex-start',
+    alignItems : 'center',
     backgroundColor : 'white',
     padding : 10,
     paddingTop : 30,
@@ -142,7 +171,7 @@ const styles = StyleSheet.create({
     alignSelf : 'center',
   },
 
-  // ----MODAL STARTS---
+  // ----MODAL STYLING STARTS---
   
   modalView : {
     backgroundColor:'#ebe6df',
@@ -161,18 +190,26 @@ const styles = StyleSheet.create({
     color : 'white',
   },
 
-  modalTextInput : {
+  modalAmountInput : {
     fontSize : 35,
     textAlign : 'center',
-    //padding : 20,
     borderBottomWidth : 2,
     borderEndColor : 'black',
     margin : 5,
     color : 'black',
   },
 
-  // SUBMIT BUTTONa
-  //
+  modalTextInput : {
+    fontSize : 20,
+    paddingTop : 30,
+    padding : 5,
+    borderBottomWidth : 2,
+    borderEndColor : 'black',
+    marginHorizontal : 30,
+    color : '#2b2b2b',
+  },
+  /* SUBMIT BUTTON
+  */
   modalSubmitBtn : {
     borderRadius : 15,
     backgroundColor : '#fc035e',
@@ -192,23 +229,7 @@ const styles = StyleSheet.create({
     paddingHorizontal : 20,
   },
 
-  // ----MODAL ENDS---
-
-  signBgStyle : {
-    backgroundColor : '#3ea832',
-    paddingHorizontal : 30,
-    paddingVertical : 5,
-    borderRadius : 10,
-    marginHorizontal : 30,
-  },
-
-  signStyle : {
-    fontSize : 40,
-    textAlignVertical : 'center',
-    fontWeight : 'bold',
-    alignSelf : 'center',
-    color : 'white',
-  },
+  // ----MODAL STYLING ENDS---
 
   errorStyle : {
     alignSelf : 'center',

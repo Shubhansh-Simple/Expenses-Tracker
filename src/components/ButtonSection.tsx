@@ -1,26 +1,29 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const ButtonSection = ( {btnColor : string, btnText : string} ) => {
+const ButtonSection = ( {btnColor, btnText, callModal } ) => {
   return (
-    <TouchableOpacity style={{ flexDirection : 'row'}}>
+    <TouchableOpacity 
+      style={{ flexDirection : 'row'}}
+      onPress={()=>{ callModal(true) }}
+    >
 
-      <View style={ [styles.signBgStyle,{backgroundColor : 'yellow' }] } >
+      <View style={ [styles.signBgStyle,{backgroundColor : btnColor}] } >
         <Text style={ styles.signStyle}>
           {btnText}
         </Text>
       </View>
     </TouchableOpacity>
+
   )
 };
 
 const styles = StyleSheet.create({
 
   signBgStyle : {
-    //backgroundColor : {btnColor},
     paddingHorizontal : 30,
     paddingVertical : 5,
-    borderRadius : 20,
+    borderRadius : 10,
     marginHorizontal : 30,
   },
 
