@@ -66,6 +66,7 @@ const readingPocket = () => {
           {
             if( _array.length === 0){
               console.log('Checking data -',_array)
+              // Calling Function
               insertPocket()
             }
             else{

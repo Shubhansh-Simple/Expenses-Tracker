@@ -7,6 +7,7 @@ import { View,
          Button,
          StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+
 import ButtonSection from '../components/ButtonSection';
 
 const HomeScreen = ({navigation}) => {
@@ -19,21 +20,48 @@ const HomeScreen = ({navigation}) => {
   const [ modalVisible, setModalVisible ] = useState(false);
 
   // QUERIES
-  let readingPocketQuery : string  = 'SELECT currentBal FROM Pocket WHERE ID=1'
+  let readingPocketQuery : string  = 'SELECT * FROM Pocket WHERE id=1;'
 
   // DATABASE SECTION STARTS
   const readingPocket = () => {
     /*
      * READING Pocket
      * table
-     * */
+     */
 
     global.db.transaction( tx =>{
-      tx.executeSql( readingPocketQuery,
+      tx.executeSql( 
+        readingPocketQuery,
         null,
-        (_,{ rows:{ _array }})=>{ setCurrentBal( _array[0].currentBal+0 )},
+          (_,{ rows:{ _array }})=>{ 
+            setCurrentBal( _array[0].currentBal )
+          },
         ()=>{console.log('Failed to read pocket.')},
       )
+    })
+  }
+
+  const insertCredit = ( credit_amount : number, credit_description : string ) => {
+    /*
+     * INSERTING INTO
+     * CREDIT TABLE
+     */
+
+    let insertCreditQuery : string = 'INSERT INTO Credit( credit_amount,credit_description ) VALUES(?,?);'
+
+    global.db.transaction( tx =>{
+      tx.executeSql( 
+                     insertCreditQuery,
+
+                     [credit_amount,credit_description],
+
+                     (_,txdb)=>{
+                          // Calling Function
+                          incrementPocket( credit_amount )
+                          console.log('Successfully inserted data into credit.')
+                      },
+                     (_,err)=>{console.log('Error updating - ',err) }
+                   )
     })
   }
 
@@ -41,16 +69,19 @@ const HomeScreen = ({navigation}) => {
     /*
      * ADDING balance to 
      * current balance
-     * */
+     */
+
+    let updatePocketQuery : string = 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)'
 
     global.db.transaction( tx =>{
-      tx.executeSql( 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)',
+      tx.executeSql( updatePocketQuery,
                      [currentBal + valueAdd],
                      (_,txdb)=>{
                          setCurrentBal( currentBal + valueAdd )
-                         console.log('Inserted data successfully.'),
+                         console.log('Updated data successfully.'),
                          setModalVisible(false) 
                         },
+                     (_,err)=>{console.log('Error updating - ',err) }
                    )
     })
   }
@@ -62,6 +93,7 @@ const HomeScreen = ({navigation}) => {
    * AFTER LOADING
    * THIS SCREEN
    */
+    console.log('Inside useEffect of home.')
     readingPocket()
   },[])
 
@@ -111,7 +143,8 @@ const HomeScreen = ({navigation}) => {
           {/* MODAL SUBMIT BUTTON */}
           <TouchableOpacity 
             onPress={()=>{
-                incrementPocket(+inputAmount) 
+                console.log('Submit data - ',inputText,inputAmount)
+                insertCredit( +inputAmount,inputText )
             }}
           >
             <View style={ styles.modalSubmitBtn } >
@@ -160,14 +193,16 @@ const styles = StyleSheet.create({
   homeStyle : {
     flex : 1,
     alignItems : 'center',
+    justifyContent : 'center',
     backgroundColor : 'white',
-    padding : 10,
-    paddingTop : 30,
   },
   
   currentBalStyle : {
+    margin : 10,
+    padding : 5,
     fontSize : 25,
-    color : 'black',
+    color : 'white',
+    backgroundColor : 'black',
     alignSelf : 'center',
   },
 
@@ -208,8 +243,8 @@ const styles = StyleSheet.create({
     marginHorizontal : 30,
     color : '#2b2b2b',
   },
-  /* SUBMIT BUTTON
-  */
+
+  // SUBMIT BUTTON
   modalSubmitBtn : {
     borderRadius : 15,
     backgroundColor : '#fc035e',
