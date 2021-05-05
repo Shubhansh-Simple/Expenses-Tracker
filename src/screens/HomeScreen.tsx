@@ -173,6 +173,12 @@ const HomeScreen = ({navigation}) => {
           btnText='-' 
           callModal={(bool)=>{ setModalVisible(bool) }} 
         />
+
+        <ButtonSection 
+          btnColor='black' 
+          btnText='$' 
+          callModal={(bool)=>{ navigation.navigate('transaction') }} 
+        />
       </View>
 
       {/* MAIN BUTTON SECTION ENDS */}

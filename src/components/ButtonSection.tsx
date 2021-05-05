@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingHorizontal : 30,
     paddingVertical : 5,
     borderRadius : 10,
-    marginHorizontal : 30,
+    marginHorizontal : 10,
   },
 
   signStyle : {

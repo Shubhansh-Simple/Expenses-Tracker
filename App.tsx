@@ -9,6 +9,7 @@ import * as SQLite from 'expo-sqlite';
 // LOCAL
 import HomeScreen         from './src/screens/HomeScreen';
 import ReadDatabaseScreen from './src/screens/ReadDatabaseScreen';
+import TransactionScreen  from './src/screens/TransactionScreen';
 
 
 global.db = SQLite.openDatabase('something2.db');
@@ -143,6 +144,13 @@ export default () => {
           component={ReadDatabaseScreen}
           options={ {title:'Laxmi Manager'}}
         />
+
+        <Stack.Screen
+          name='transaction'
+          component={TransactionScreen}
+          options={ {title:'Transactions'}}
+        />
+
 
       </Stack.Navigator>
 
