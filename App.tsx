@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React,{useEffect} from 'react';
 
 // FOR NAVIGATION
@@ -11,92 +10,12 @@ import HomeScreen         from './src/screens/HomeScreen';
 import ReadDatabaseScreen from './src/screens/ReadDatabaseScreen';
 import TransactionScreen  from './src/screens/TransactionScreen';
 
+import { createCredit, 
+         createPocket,
+         readingPocket }  from './src/database_code/starterFunction';
+
 
 global.db = SQLite.openDatabase('something2.db');
-
-
-const createCredit = () => {
-  /*
-   * CREATING CREDIT
-   * TABLE
-   */
-
-  let createCreditQuery : string = 'CREATE TABLE IF NOT EXISTS "Credit" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "credit_amount" smallint unsigned NOT NULL CHECK ("credit_amount" >= 0), "credit_description" varchar(40) NOT NULL);'
-
-  global.db.transaction( tx =>{
-      tx.executeSql( 
-        createCreditQuery, 
-        null,
-        ()=>{console.log('Successfully created credit')},
-        (_,err)=>{console.log('Failed to create credit.',err)},
-      )
-  })
-
-}
-
-const insertPocket = () => {
-  /*
-   * INSERT DEFAULT
-   * VALUE TO POCKET
-   */
-
-  let insertPocketQuery : string = 'INSERT INTO Pocket (id,currentBal) VALUES(?,?);'
-
-  global.db.transaction( tx =>{
-      tx.executeSql( 
-        insertPocketQuery, 
-        [1,0],
-        (_,{ rows:{ _array }})=>{console.log('Data after insert ',_array)},
-        (_,err)=>{console.log('Failed to insert into pocket.',err)},
-      )
-  })
-}
-
-const readingPocket = () => {
-  /*
-   * READING TABLE
-   */
-
-  let readPocketQuery : string = 'SELECT * FROM Pocket;'
-
-  global.db.transaction( tx =>{
-      tx.executeSql(
-        readPocketQuery,
-        null,
-        (_,{ rows:{ _array }})=>
-          {
-            if( _array.length === 0){
-              console.log('Checking data -',_array)
-              // Calling Function
-              insertPocket()
-            }
-            else{
-              console.log('Table is already prepopulated - ',_array)
-            }
-          },
-        (_,err)=>{console.log('Failed to read pocket.',err)},
-      )
-  })
-}
-
-const createPocket = () => {
-  /*
-   * CREATING TABLE
-   * IF IT'S NOT
-   * EXIST
-   */
-
-  let createPocketQuery : string = 'CREATE TABLE IF NOT EXISTS "Pocket" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "currentBal" smallint unsigned NOT NULL CHECK ("currentBal" >= 0));' 
-
-  global.db.transaction( tx=>{
-    tx.executeSql(
-      createPocketQuery,
-      null,
-      ()=>{console.log('Successfully Pocket Table is created.')},
-      (_,err)=>{console.log('Failed to created SQL Table.',err)},
-    );
-  })
-}
 
 
 export default () => {
