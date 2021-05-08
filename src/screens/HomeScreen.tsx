@@ -11,6 +11,7 @@ import { View,
 import { Entypo } from '@expo/vector-icons';
 
 import ButtonSection from '../components/ButtonSection';
+import ModalDebit    from '../components/ModalDebit';
 
 const HomeScreen = ({navigation}) => {
 
@@ -19,7 +20,10 @@ const HomeScreen = ({navigation}) => {
   const [ inputAmount, setInputAmount ]   = useState('');
   const [ currentBal, setCurrentBal ]     = useState(0);
   const [ errorText, errorTextSet ]       = useState('Default Error Style');
-  const [ modalVisible, setModalVisible ] = useState(false);
+
+  // MODAL's STATE
+  const [ modalCreditVisible, setModalCreditVisible ] = useState(false);
+  const [ modalDebitVisible,  setModalDebitVisible  ] = useState(false);
 
   // QUERIES
   let readingPocketQuery : string  = 'SELECT * FROM Pocket WHERE id=1;'
@@ -82,7 +86,7 @@ const HomeScreen = ({navigation}) => {
                      (_,txdb)=>{
                          setCurrentBal( currentBal + valueAdd )
                          console.log('Updated data successfully.'),
-                         setModalVisible(false) 
+                         setModalCreditVisible(false) 
                         },
                      (_,err)=>{console.log('Error updating - ',err) }
                    )
@@ -106,17 +110,17 @@ const HomeScreen = ({navigation}) => {
 
       {/* MODAL STARTS */}
       <Modal
-        visible={modalVisible}
+        visible={modalCreditVisible}
         animationType='slide'
         transparent={true}
-        onRequestClose={()=>{ setModalVisible(false)}}
+        onRequestClose={()=>{ setModalCreditVisible(false)}}
       >
         <View style={ styles.modalView } >
           <Entypo
             name='cross'
             style={ styles.modalIcon }
             size={50}
-            onPress={()=>{ setModalVisible(false)}}
+            onPress={()=>{ setModalCreditVisible(false)}}
           />
 
           <TextInput 
@@ -160,21 +164,28 @@ const HomeScreen = ({navigation}) => {
       </Modal>
       {/* MODAL ENDS */}
 
+      { /* SECOND MODAL */ }
+      <ModalDebit 
+        modalVisible={modalDebitVisible}
+        setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) } }/>
+
 
       {/* MAIN BUTTON SECTION STARTS */}
 
+      
       <View style={ styles.mainButtonContainer }>
+
 
         <ButtonSection 
           btnColor='#3ea832' 
           btnText='+' 
-          callModal={(bool : boolean )=>{ setModalVisible(bool) }} 
+          callModal={(bool : boolean )=>{ setModalCreditVisible(bool) }} 
         />
 
         <ButtonSection 
           btnColor='#ff0022' 
           btnText='-' 
-          callModal={(bool : boolean )=>{ setModalVisible(bool) }} 
+          callModal={(bool : boolean )=>{ setModalDebitVisible(bool) }} 
         />
 
         <ButtonSection 
@@ -275,6 +286,7 @@ const styles = StyleSheet.create({
     fontSize : 20,
     color : 'white',
     padding : 10,
+    fontWeight : 'bold',
     paddingHorizontal : 20,
   },
 
