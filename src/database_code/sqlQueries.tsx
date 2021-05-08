@@ -21,6 +21,7 @@ export const pocket = {
 
   readPocketQuery   : 'SELECT * FROM Pocket;',
 
+  updatePocketQuery : 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)'
 }
 
 

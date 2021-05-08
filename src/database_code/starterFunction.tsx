@@ -9,37 +9,42 @@ import React from 'react';
 import { pocket, credit } from './sqlQueries';
 
 
-const queryExecutor = ( sqlQuery:string, argument, table_name='' ) => {
+const queryExecutor = ( sqlQuery:string, 
+                        argument : null | Array<any>, 
+                        table_name='' ) => {
 
-  global.db.transaction( tx =>{
+  global.db.transaction( (tx)=>{
     tx.executeSql(
       sqlQuery,
       argument,
-      () => { console.log('Success in',table_name,'table') },
+      () => { 
+        console.log('Success in',table_name,'table') 
+      },
       (_,err) => { console.log('Failure in ',table_name,' table - ',err) }
     )
   })
+
 };
 
 
 export function createCredit(){
   // CREATING CREDIT TABLE 
   //
-  queryExecutor(credit.createCreditQuery,null,'Credit')
+  queryExecutor(credit.createCreditQuery, null, 'Credit')
 }
 
 
 function insertPocket(){
   // INSERT DEFAULT VALUE TO POCKET 
   //
-  queryExecutor( pocket.insertPocketQuery,[1,0],'Pocket' )
+  queryExecutor( pocket.insertPocketQuery, [1,0], 'Pocket-I' )
 }
 
 
 export function createPocket(){
   //  CREATING TABLE IF IT'S NOT  EXIST
   //
-  queryExecutor( pocket.createPocketQuery, null, 'Pocket' )
+  queryExecutor( pocket.createPocketQuery, null, 'Pocket-C' )
 }
 
 
@@ -47,6 +52,7 @@ export function readingPocket(){
   /*
    * READING TABLE
    */
+  queryExecutor( pocket.readPocketQuery, null, 'Pocket-R' ) 
 
   global.db.transaction( tx =>{
       tx.executeSql(
@@ -68,8 +74,5 @@ export function readingPocket(){
   })
 }
 
-/*
- * NEXT 
- * ONE
- */
+
 

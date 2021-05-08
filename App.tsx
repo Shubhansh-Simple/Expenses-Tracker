@@ -17,7 +17,6 @@ import { createCredit,
 
 global.db = SQLite.openDatabase('something2.db');
 
-
 export default () => {
 
   useEffect( ()=>{
@@ -39,6 +38,7 @@ export default () => {
   return (
     <NavigationContainer>
   
+      {/* ALL SCREENS STYLE SETTINGS */}
       <Stack.Navigator screenOptions={
         {
           headerStyle : {
@@ -51,6 +51,8 @@ export default () => {
           }
         }
       }>
+
+        {/* DJANGO's URLS.PY */}
 
         <Stack.Screen
           name='home'
@@ -69,7 +71,6 @@ export default () => {
           component={TransactionScreen}
           options={ {title:'Transactions'}}
         />
-
 
       </Stack.Navigator>
 

@@ -1,4 +1,5 @@
 import React, {useState,useEffect} from 'react';
+
 import { View, 
          Modal, 
          TouchableOpacity, 
@@ -6,6 +7,7 @@ import { View,
          TextInput,
          Button,
          StyleSheet } from 'react-native';
+
 import { Entypo } from '@expo/vector-icons';
 
 import ButtonSection from '../components/ButtonSection';
@@ -41,7 +43,8 @@ const HomeScreen = ({navigation}) => {
     })
   }
 
-  const insertCredit = ( credit_amount : number, credit_description : string ) => {
+  const insertCredit = ( credit_amount : number,  
+                         credit_description : string ) => {
     /*
      * INSERTING INTO
      * CREDIT TABLE
@@ -117,7 +120,7 @@ const HomeScreen = ({navigation}) => {
           />
 
           <TextInput 
-            placeholder='Type Amount'
+            placeholder='Amount'
             placeholderTextColor='#242320'
             keyboardType='numeric'
             value={inputAmount}
@@ -148,7 +151,7 @@ const HomeScreen = ({navigation}) => {
             }}
           >
             <View style={ styles.modalSubmitBtn } >
-              <Text style={ styles.modalSubmitBtnText} >Submit</Text>
+              <Text style={ styles.modalSubmitBtnText} >Credit</Text>
             </View>
           </TouchableOpacity>
      
@@ -160,24 +163,24 @@ const HomeScreen = ({navigation}) => {
 
       {/* MAIN BUTTON SECTION STARTS */}
 
-      <View style={{ flexDirection:'row',alignItems:'stretch'}}>
+      <View style={ styles.mainButtonContainer }>
 
         <ButtonSection 
           btnColor='#3ea832' 
           btnText='+' 
-          callModal={(bool)=>{ setModalVisible(bool) }} 
+          callModal={(bool : boolean )=>{ setModalVisible(bool) }} 
         />
 
         <ButtonSection 
           btnColor='#ff0022' 
           btnText='-' 
-          callModal={(bool)=>{ setModalVisible(bool) }} 
+          callModal={(bool : boolean )=>{ setModalVisible(bool) }} 
         />
 
         <ButtonSection 
           btnColor='black' 
           btnText='$' 
-          callModal={(bool)=>{ navigation.navigate('transaction') }} 
+          callModal={(bool : boolean )=>{ navigation.navigate('transaction') }} 
         />
       </View>
 
@@ -190,8 +193,7 @@ const HomeScreen = ({navigation}) => {
         Current Balance - {currentBal} Rs
       </Text>
 
-    </View>
-  )
+    </View>)
 };
 
 const styles = StyleSheet.create({
@@ -210,6 +212,12 @@ const styles = StyleSheet.create({
     color : 'white',
     backgroundColor : 'black',
     alignSelf : 'center',
+  },
+
+  mainButtonContainer : {
+    flexDirection:'row',
+    alignItems:'stretch',
+    margin : 30
   },
 
   // ----MODAL STYLING STARTS---
@@ -253,7 +261,7 @@ const styles = StyleSheet.create({
   // SUBMIT BUTTON
   modalSubmitBtn : {
     borderRadius : 15,
-    backgroundColor : '#fc035e',
+    backgroundColor : '#1db331',
     paddingHorizontal : 20,
     alignSelf : 'center',
     margin : 40,

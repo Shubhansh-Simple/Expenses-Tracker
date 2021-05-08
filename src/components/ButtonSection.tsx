@@ -21,14 +21,14 @@ const ButtonSection = ( {btnColor, btnText, callModal } ) => {
 const styles = StyleSheet.create({
 
   signBgStyle : {
-    paddingHorizontal : 30,
+    paddingHorizontal : 35,
     paddingVertical : 5,
     borderRadius : 10,
     marginHorizontal : 10,
   },
 
   signStyle : {
-    fontSize : 40,
+    fontSize : 50,
     textAlignVertical : 'center',
     fontWeight : 'bold',
     alignSelf : 'center',
