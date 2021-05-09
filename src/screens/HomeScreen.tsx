@@ -1,25 +1,17 @@
 import React, {useState,useEffect} from 'react';
 
 import { View, 
-         Modal, 
-         TouchableOpacity, 
          Text,
-         TextInput,
          Button,
          StyleSheet } from 'react-native';
 
-import { Entypo } from '@expo/vector-icons';
-
-import ButtonSection from '../components/ButtonSection';
-import ModalDebit    from '../components/ModalDebit';
+import ButtonSection  from '../components/ButtonSection';
+import ModalComponent from '../components/ModalComponent';
 
 const HomeScreen = ({navigation}) => {
 
   // REACT STATE 
-  const [ inputText, setInputText]        = useState('');
-  const [ inputAmount, setInputAmount ]   = useState('');
   const [ currentBal, setCurrentBal ]     = useState(0);
-  const [ errorText, errorTextSet ]       = useState('Default Error Style');
 
   // MODAL's STATE
   const [ modalCreditVisible, setModalCreditVisible ] = useState(false);
@@ -108,73 +100,25 @@ const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.homeStyle} >
 
-      {/* MODAL STARTS */}
-      <Modal
-        visible={modalCreditVisible}
-        animationType='slide'
-        transparent={true}
-        onRequestClose={()=>{ setModalCreditVisible(false)}}
-      >
-        <View style={ styles.modalView } >
-          <Entypo
-            name='cross'
-            style={ styles.modalIcon }
-            size={50}
-            onPress={()=>{ setModalCreditVisible(false)}}
-          />
+      <ModalComponent
+        submitBtnText='Credit'
+        submitBtnColor='green'
+        modalVisible={modalCreditVisible}
+        setModalVisible={ (bool:boolean)=>{ setModalCreditVisible(bool) }}
+        submitData={ (data1,data2)=>{ console.log('Parent get data - ',data1,data2)} }
+      />
 
-          <TextInput 
-            placeholder='Amount'
-            placeholderTextColor='#242320'
-            keyboardType='numeric'
-            value={inputAmount}
-            onChangeText={inputValue=>{setInputAmount(inputValue)}}
-            style={ styles.modalAmountInput } 
-          />
-
-          <TextInput 
-            placeholder='Description'
-            placeholderTextColor='#242320'
-            value={inputText}
-            onChangeText={inputValue=>{setInputText(inputValue)}}
-            autoCorrect={false}
-            style={ styles.modalTextInput } 
-          />
-
-          {/*ERROR*/}
-          { true ? 
-            <Text style={ styles.errorStyle }>({errorText})</Text> :
-            null 
-          }
-
-          {/* MODAL SUBMIT BUTTON */}
-          <TouchableOpacity 
-            onPress={()=>{
-                console.log('Submit data - ',inputText,inputAmount)
-                insertCredit( +inputAmount,inputText )
-            }}
-          >
-            <View style={ styles.modalSubmitBtn } >
-              <Text style={ styles.modalSubmitBtnText} >Credit</Text>
-            </View>
-          </TouchableOpacity>
-     
-
-        </View>
-      </Modal>
-      {/* MODAL ENDS */}
-
-      { /* SECOND MODAL */ }
-      <ModalDebit 
+      <ModalComponent
+        submitBtnText='Debit'
+        submitBtnColor='red'
         modalVisible={modalDebitVisible}
-        setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) } }/>
-
+        setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) }}
+        submitData={ (data1,data2)=>{ console.log('Parent get data - ',data1,data2)} }
+      />
 
       {/* MAIN BUTTON SECTION STARTS */}
-
       
       <View style={ styles.mainButtonContainer }>
-
 
         <ButtonSection 
           btnColor='#3ea832' 
@@ -220,6 +164,8 @@ const styles = StyleSheet.create({
     margin : 10,
     padding : 5,
     fontSize : 25,
+    borderRadius : 15,
+    fontStyle : 'italic',
     color : 'white',
     backgroundColor : 'black',
     alignSelf : 'center',
@@ -229,74 +175,6 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     alignItems:'stretch',
     margin : 30
-  },
-
-  // ----MODAL STYLING STARTS---
-  
-  modalView : {
-    backgroundColor:'#ebe6df',
-    flex : 1,
-    //alignSelf : 'stretch',
-    padding : 20,
-  },
-
-  modalIcon : {
-    alignSelf : 'flex-end',
-  },
-
-  modalText : {
-    fontSize : 30,
-    textAlign : 'center',
-    color : 'white',
-  },
-
-  modalAmountInput : {
-    fontSize : 35,
-    textAlign : 'center',
-    borderBottomWidth : 2,
-    borderEndColor : 'black',
-    margin : 5,
-    color : 'black',
-  },
-
-  modalTextInput : {
-    fontSize : 20,
-    paddingTop : 30,
-    padding : 5,
-    borderBottomWidth : 2,
-    borderEndColor : 'black',
-    marginHorizontal : 30,
-    color : '#2b2b2b',
-  },
-
-  // SUBMIT BUTTON
-  modalSubmitBtn : {
-    borderRadius : 15,
-    backgroundColor : '#1db331',
-    paddingHorizontal : 20,
-    alignSelf : 'center',
-    margin : 40,
-    shadowColor : 'black',
-    shadowOffset : { width:2, height:2 },
-    shadowOpacity : 1.9,
-
-  },
-
-  modalSubmitBtnText : {
-    fontSize : 20,
-    color : 'white',
-    padding : 10,
-    fontWeight : 'bold',
-    paddingHorizontal : 20,
-  },
-
-  // ----MODAL STYLING ENDS---
-
-  errorStyle : {
-    alignSelf : 'center',
-    fontSize : 15,
-    color : 'red',
-    marginBottom : 5,
   },
 
 });
