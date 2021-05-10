@@ -168,7 +168,8 @@ const styles = StyleSheet.create({
     fontStyle : 'italic',
     color : 'white',
     backgroundColor : 'black',
-    alignSelf : 'center',
+    alignSelf : 'stretch',
+    textAlign : 'center',
   },
 
   mainButtonContainer : {

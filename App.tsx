@@ -25,7 +25,6 @@ export default () => {
      * at the starting of app
      * CREATE TABLE IF NOT EXISTS
      */
- 
   createPocket()
   readingPocket()
   createCredit()
