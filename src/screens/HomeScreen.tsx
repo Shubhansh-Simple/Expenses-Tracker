@@ -5,8 +5,13 @@ import { View,
          Button,
          StyleSheet } from 'react-native';
 
+// LOCAL
 import ButtonSection  from '../components/ButtonSection';
 import ModalComponent from '../components/ModalComponent';
+
+import { pocket,credit } from '../database_code/sqlQueries';
+import queryExecutor     from '../database_code/starterFunction';
+
 
 const HomeScreen = ({navigation}) => {
 
@@ -17,8 +22,6 @@ const HomeScreen = ({navigation}) => {
   const [ modalCreditVisible, setModalCreditVisible ] = useState(false);
   const [ modalDebitVisible,  setModalDebitVisible  ] = useState(false);
 
-  // QUERIES
-  let readingPocketQuery : string  = 'SELECT * FROM Pocket WHERE id=1;'
 
   // DATABASE SECTION STARTS
   const readingPocket = () => {
@@ -26,17 +29,12 @@ const HomeScreen = ({navigation}) => {
      * READING Pocket
      * table
      */
-
-    global.db.transaction( tx =>{
-      tx.executeSql( 
-        readingPocketQuery,
-        null,
-          (_,{ rows:{ _array }})=>{ 
-            setCurrentBal( _array[0].currentBal )
-          },
-        ()=>{console.log('Failed to read pocket.')},
-      )
-    })
+    
+    queryExecutor( pocket.readPocketQuery+' WHERE id=1',
+                   null,
+                   'Pocket-R',
+                   ( databaseData )=>{ setCurrentBal(databaseData[0].currentBal) }
+                 )
   }
 
   const insertCredit = ( credit_amount : number,  
@@ -45,45 +43,30 @@ const HomeScreen = ({navigation}) => {
      * INSERTING INTO
      * CREDIT TABLE
      */
-
-    let insertCreditQuery : string = 'INSERT INTO Credit( credit_amount,credit_description ) VALUES(?,?);'
-
-    global.db.transaction( tx =>{
-      tx.executeSql( 
-                     insertCreditQuery,
-
-                     [credit_amount,credit_description],
-
-                     (_,txdb)=>{
-                          // Calling Function
-                          incrementPocket( credit_amount )
-                          console.log('Successfully inserted data into credit.')
-                      },
-                     (_,err)=>{console.log('Error updating - ',err) }
-                   )
-    })
+    queryExecutor( credit.insertCreditQuery,
+                   [credit_amount,credit_description],
+                   'Credit-I',
+                   ( databaseData )=>{ incrementPocket( credit_amount ) }
+                 )
   }
+
 
   const incrementPocket = ( valueAdd : number ) => {
     /*
      * ADDING balance to 
      * current balance
      */
-
-    let updatePocketQuery : string = 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)'
-
-    global.db.transaction( tx =>{
-      tx.executeSql( updatePocketQuery,
-                     [currentBal + valueAdd],
-                     (_,txdb)=>{
+    queryExecutor( pocket.updatePocketQuery,
+                   [currentBal + valueAdd],
+                   'Pocket-U',
+                   ( databaseData )=>{ 
                          setCurrentBal( currentBal + valueAdd )
                          console.log('Updated data successfully.'),
-                         setModalCreditVisible(false) 
-                        },
-                     (_,err)=>{console.log('Error updating - ',err) }
-                   )
-    })
+                         setModalCreditVisible(false)
+                   }
+                 )
   }
+
   // DATABASE SECTION ENDS 
 
   useEffect( ()=>{
@@ -105,7 +88,7 @@ const HomeScreen = ({navigation}) => {
         submitBtnColor='green'
         modalVisible={modalCreditVisible}
         setModalVisible={ (bool:boolean)=>{ setModalCreditVisible(bool) }}
-        submitData={ (data1,data2)=>{ console.log('Parent get data - ',data1,data2)} }
+        submitData={ (data1,data2)=>{ insertCredit(+data1,data2) } }
       />
 
       <ModalComponent

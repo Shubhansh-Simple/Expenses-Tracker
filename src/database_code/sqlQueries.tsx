@@ -9,6 +9,9 @@ export const credit = {
                         '("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
                         '"credit_amount" smallint unsigned NOT NULL CHECK ("credit_amount" >= 0), '+
                         '"credit_description" varchar(40) NOT NULL);',
+
+    insertCreditQuery : 'INSERT INTO Credit( credit_amount,credit_description ) '+
+                        'VALUES(?,?);',
 }
 
 export const pocket = {
@@ -22,6 +25,7 @@ export const pocket = {
   readPocketQuery   : 'SELECT * FROM Pocket;',
 
   updatePocketQuery : 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)'
+
 }
 
 
