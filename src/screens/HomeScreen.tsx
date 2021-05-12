@@ -5,6 +5,9 @@ import { View,
          Button,
          StyleSheet } from 'react-native';
 
+// 3rd Party
+import DropdownMenu from 'react-native-dropdown-menu';
+
 // LOCAL
 import ButtonSection  from '../components/ButtonSection';
 import ModalComponent from '../components/ModalComponent';
@@ -85,7 +88,8 @@ const HomeScreen = ({navigation}) => {
 
       <ModalComponent
         submitBtnText='Credit'
-        submitBtnColor='green'
+        modalTitle='Add Credit'
+        submitBtnColor='#34b518'
         modalVisible={modalCreditVisible}
         setModalVisible={ (bool:boolean)=>{ setModalCreditVisible(bool) }}
         submitData={ (data1,data2)=>{ insertCredit(+data1,data2) } }
@@ -93,6 +97,7 @@ const HomeScreen = ({navigation}) => {
 
       <ModalComponent
         submitBtnText='Debit'
+        modalTitle='Add Expense'
         submitBtnColor='red'
         modalVisible={modalDebitVisible}
         setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) }}
@@ -124,14 +129,36 @@ const HomeScreen = ({navigation}) => {
 
       {/* MAIN BUTTON SECTION ENDS */}
 
+ 
+      {/*<DropdownMenu 
+        data={['Python','Ruby','Perl']}
+      />*/}
+      
+
       <Button title='Navigate' 
               onPress={ ()=>{ navigation.navigate('reading') }} />
 
-      <Text style={ styles.currentBalStyle }> 
-        Current Balance - {currentBal} Rs
-      </Text>
+      <View style={ styles.currentBalParentContainer }>
 
-    </View>)
+        <View style={ styles.currentBalContainer }>
+          <Text style={ styles.currentBalStyle }> Cash </Text>
+          <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
+        </View>
+
+        <View style={ styles.currentBalContainer }>
+          <Text style={ styles.currentBalStyle }> Online </Text>
+          <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
+        </View>   
+
+        <View style={ styles.currentBalContainer }>
+          <Text style={ styles.currentBalStyle }> Total Balance </Text>
+          <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
+        </View>
+
+      </View>
+
+    </View>
+  )
 };
 
 const styles = StyleSheet.create({
@@ -142,16 +169,25 @@ const styles = StyleSheet.create({
     justifyContent : 'center',
     backgroundColor : 'white',
   },
+
+  currentBalParentContainer : { 
+    backgroundColor:'#ede5ce', 
+    borderRadius : 20,
+    marginVertical : 10,
+    alignSelf : 'stretch'
+  },
+
+  currentBalContainer : {
+    alignSelf : 'stretch',
+    flexDirection : 'row',
+    justifyContent : 'space-between',
+  },
   
   currentBalStyle : {
-    margin : 10,
-    padding : 5,
-    fontSize : 25,
-    borderRadius : 15,
+    padding : 15,
+    fontSize : 20,
+    textAlignVertical : 'center',
     fontStyle : 'italic',
-    color : 'white',
-    backgroundColor : 'black',
-    alignSelf : 'stretch',
     textAlign : 'center',
   },
 
