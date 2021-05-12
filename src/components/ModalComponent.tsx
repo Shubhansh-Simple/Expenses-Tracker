@@ -14,6 +14,7 @@ import { Entypo } from '@expo/vector-icons';
 
 
 const ModalComponent = ({ modalVisible, 
+                          modalTitle, 
                           setModalVisible, 
                           submitBtnColor,
                           submitBtnText,
@@ -36,20 +37,21 @@ const ModalComponent = ({ modalVisible,
     >
       <View style={ styles.modalView } >
         
-        <View>
+        <View style={{ flexDirection : 'row',justifyContent : 'space-between'}}>
 
-          <Text style={ styles.modalTitle }>Modal Title</Text>
+          <Text style={ styles.modalTitle }>{modalTitle}</Text>
 
           <Entypo
             name='cross'
             style={ styles.modalIcon }
             size={50}
+            color='#353b34'
             onPress={()=>{setModalVisible(false)}}
           />
         </View>
 
         <TextInput 
-          placeholder='Amounty'
+          placeholder='0'
           placeholderTextColor='#242320'
           keyboardType='numeric'
           value={inputAmount}
@@ -58,8 +60,7 @@ const ModalComponent = ({ modalVisible,
         />
 
         <TextInput 
-          placeholder='Description'
-          placeholderTextColor='#242320'
+          placeholder='Type your description here...'
           value={inputDescription}
           onChangeText={inputValue=>{setInputDescription(inputValue)}}
           autoCorrect={false}
@@ -89,16 +90,19 @@ const styles = StyleSheet.create({
   modalView : {
     backgroundColor:'#ebe6df',
     flex : 1,
-    padding : 20,
+    padding : 10,
   },
 
   modalTitle : {
-    fontSize : 30,
+    fontSize : 25,
+    color : '#353b34',
+    fontWeight : 'bold',
+    fontStyle : 'italic',
     textAlign : 'center',
+    textAlignVertical : 'center',
   },
 
   modalIcon : {
-    alignSelf : 'flex-end',
   },
 
   modalText : {
@@ -113,7 +117,8 @@ const styles = StyleSheet.create({
     textAlign : 'center',
     borderBottomWidth : 2,
     borderEndColor : 'black',
-    margin : 5,
+    marginHorizontal : 30,
+    margin : 10,
     color : 'black',
   },
 
@@ -124,7 +129,7 @@ const styles = StyleSheet.create({
     borderBottomWidth : 2,
     borderEndColor : 'black',
     marginHorizontal : 30,
-    color : '#2b2b2b',
+    color : '#4e544d',
   },
  
   // SUBMIT BUTTON
