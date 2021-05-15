@@ -5,11 +5,8 @@ import { View,
          Button,
          StyleSheet } from 'react-native';
 
-// 3rd Party
-import DropdownMenu from 'react-native-dropdown-menu';
-
 // LOCAL
-import ButtonSection  from '../components/ButtonSection';
+import ButtonComponent  from '../components/ButtonComponent';
 import ModalComponent from '../components/ModalComponent';
 
 import { pocket,credit } from '../database_code/sqlQueries';
@@ -32,7 +29,6 @@ const HomeScreen = ({navigation}) => {
      * READING Pocket
      * table
      */
-    
     queryExecutor( pocket.readPocketQuery+' WHERE id=1',
                    null,
                    'Pocket-R',
@@ -108,19 +104,19 @@ const HomeScreen = ({navigation}) => {
       
       <View style={ styles.mainButtonContainer }>
 
-        <ButtonSection 
+        <ButtonComponent 
           btnColor='#3ea832' 
           btnText='+' 
           callModal={(bool : boolean )=>{ setModalCreditVisible(bool) }} 
         />
 
-        <ButtonSection 
+        <ButtonComponent 
           btnColor='#ff0022' 
           btnText='-' 
           callModal={(bool : boolean )=>{ setModalDebitVisible(bool) }} 
         />
 
-        <ButtonSection 
+        <ButtonComponent 
           btnColor='black' 
           btnText='$' 
           callModal={(bool : boolean )=>{ navigation.navigate('transaction') }} 
@@ -128,12 +124,6 @@ const HomeScreen = ({navigation}) => {
       </View>
 
       {/* MAIN BUTTON SECTION ENDS */}
-
- 
-      {/*<DropdownMenu 
-        data={['Python','Ruby','Perl']}
-      />*/}
-      
 
       <Button title='Navigate' 
               onPress={ ()=>{ navigation.navigate('reading') }} />

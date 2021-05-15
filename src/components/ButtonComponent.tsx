@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const ButtonSection = ( {btnColor, btnText, callModal } ) => {
+const ButtonComponent = ( {btnColor, btnText, callModal } ) => {
   return (
     <TouchableOpacity 
       style={{ flexDirection : 'row'}}
@@ -37,6 +37,6 @@ const styles = StyleSheet.create({
 
 });
 
-export default ButtonSection;
+export default ButtonComponent;
 
 
