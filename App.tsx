@@ -6,9 +6,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as SQLite from 'expo-sqlite';
 
 // LOCAL
-import HomeScreen         from './src/screens/HomeScreen';
-import ReadDatabaseScreen from './src/screens/ReadDatabaseScreen';
-import TransactionScreen  from './src/screens/TransactionScreen';
+import HomeScreen         from './src/Screens/HomeScreen';
+import ReadDatabaseScreen from './src/Screens/ReadDatabaseScreen';
+import TransactionScreen  from './src/Screens/TransactionScreen';
 
 import { createCredit, 
          createPocket,
@@ -52,6 +52,7 @@ export default () => {
       }>
 
         {/* DJANGO's URLS.PY */}
+        {/* Just CHANGING the sequence */}
 
         <Stack.Screen
           name='home'
