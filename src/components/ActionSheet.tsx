@@ -12,14 +12,13 @@ import { View,
          Text,
          Modal } from 'react-native';
 
-import { Entypo } from '@expo/vector-icons';
-
 const ActionSheet = ({ sheetTitle,
                        sheetDescription,
                        sheetData,
                     //------------------
                        sheetVisible,
                        setSheetVisible,
+                       sheetSelectedItem,
                     }) => {
 
   return (
@@ -53,12 +52,12 @@ const ActionSheet = ({ sheetTitle,
             {/* HEADER */}
             <View style={ styles.modalHeader }>
 
-              <Text style={{ fontSize:16, fontWeight: 'bold'}}> 
+              <Text style={{ fontSize:14, fontWeight: 'bold', paddingVertical:5}}> 
                 { sheetTitle }
               </Text>
 
               { sheetDescription 
-                ?  <Text style={{ fontSize:14, color:'#4e544d'}}>
+                ?  <Text style={{ fontSize:14, color:'#4e544d', paddingVertical:5}}>
                     ({ sheetDescription })
                   </Text>
                 : null
@@ -73,10 +72,20 @@ const ActionSheet = ({ sheetTitle,
                 keyExtractor={ item=>item.title }
                 renderItem={ (element)=>{
                   return (
-                    <TouchableOpacity onPress={ ()=>console.log('Action - ',element.item.value)}>
+                    <TouchableOpacity onPress={ ()=>{
+                      console.log('Action - ',element.item.value)
+                      sheetSelectedItem(element.item.value)
+                      setSheetVisible(false)
+                      }
+                      }>
                       <Text style={ styles.flatListItem }>
                         { element.item.title }
                       </Text>
+                      <View style={{ 
+                        borderBottomColor:'#f0ede6',
+                        borderBottomWidth:2,
+                        }}>
+                      </View>
                     </TouchableOpacity>
                   )
                 }}
@@ -104,12 +113,12 @@ const styles = StyleSheet.create({
   modalContainer : {
     flex : 1,
     justifyContent : 'flex-end',
-    padding : 20,
+    padding : 15,
   },
 
   modalBackground : {
     backgroundColor : '#faf8f7',
-    borderRadius : 20,
+    borderRadius : 15,
   },
 
   modalHeader : {
@@ -118,8 +127,8 @@ const styles = StyleSheet.create({
   },
 
   modalBody: {
-    alignItems : 'center',
-    paddingBottom : 20,
+    alignItems : 'stretch',
+    paddingBottom : 30,
   },
 
   flatListItem : {
@@ -130,17 +139,19 @@ const styles = StyleSheet.create({
     textAlign : 'center',
   },
 
+  // CANCEL BUTTON BACKGROUND   
   modalCancelButton : {
     backgroundColor : '#faf8f7',
     alignItems : 'center',
     marginVertical : 10,
-    borderRadius : 20,
+    borderRadius : 15,
   },
 
+  // CANCEL BUTTON FOREGROUND    
   modalCancelButtonText : {
     fontSize : 18,
     fontWeight : 'bold',
-    color : 'red',
+    color : '#0095ff',
     padding : 10,
   },
 

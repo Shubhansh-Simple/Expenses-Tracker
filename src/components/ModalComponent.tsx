@@ -1,5 +1,5 @@
 /*
- * Debit MODAL 
+ * Credit-Debit MODAL 
  * COMPONENT
  */
 import React, {useState} from 'react';
@@ -12,6 +12,8 @@ import { View,
 
 import { Entypo } from '@expo/vector-icons';
 
+import ActionSheet from './ActionSheet';
+
 
 const ModalComponent = ({ modalVisible, 
                           modalTitle, 
@@ -23,7 +25,16 @@ const ModalComponent = ({ modalVisible,
   // REACT's STATE 
   const [ inputAmount, setInputAmount ]          = useState('');
   const [ inputDescription, setInputDescription] = useState('');
+
+  const [ inputCashType, setCashType] = useState('Select payment type')                          
+  const [ pickerOne, setPickerOne ] = useState(false);
+
   //const [ errorText, errorTextSet ]       = useState('Default Error Style');
+  
+  const pickerOneData = [
+    { title : 'Cash'  , value : 'Cash'  },
+    { title : 'Online', value : 'Online' },
+  ]
 
   return (
 
@@ -50,6 +61,7 @@ const ModalComponent = ({ modalVisible,
           />
         </View>
 
+        {/* AMOUNT INPUT */}
         <TextInput 
           placeholder='0'
           placeholderTextColor='#242320'
@@ -59,6 +71,7 @@ const ModalComponent = ({ modalVisible,
           style={ styles.modalAmountInput } 
         />
 
+        {/* DESCRIPTION INPUT */}
         <TextInput 
           placeholder='Type your description here...'
           value={inputDescription}
@@ -67,11 +80,37 @@ const ModalComponent = ({ modalVisible,
           style={ styles.modalTextDescription } 
         />
 
+        {/* CASH TYPE MODAL */}
+        <ActionSheet 
+          sheetTitle='Choose any option'
+          sheetDescription='Ensure user what type of cash it is.'
+          sheetData={pickerOneData}
+          sheetVisible={pickerOne}
+          setSheetVisible={ (bool:boolean)=>setPickerOne(bool) }
+          sheetSelectedItem={item=>setCashType(item)}
+        />
 
+        {/* CASH TYPE INPUT */}
+        <TouchableOpacity onPress={ ()=>setPickerOne(true) }>
+          <View style={ styles.pickerOneContainer } >
+            <Text style={ styles.modalTitle }>
+              {inputCashType}
+            </Text>
+            <Entypo 
+              name='triangle-down' 
+              size={30} 
+              color='black'
+              style={ styles.modalIcon }
+            />
+          </View>
+        </TouchableOpacity>
+
+
+        
         {/* SUBMIT BUTTON */}
         <TouchableOpacity 
           onPress={()=>{ 
-                        submitData(inputAmount,inputDescription)
+                        submitData(inputAmount,inputDescription, inputCashType)
                         setModalVisible(false)
                   }}
         >
@@ -98,11 +137,11 @@ const styles = StyleSheet.create({
     color : '#353b34',
     fontWeight : 'bold',
     fontStyle : 'italic',
-    textAlign : 'center',
     textAlignVertical : 'center',
   },
 
   modalIcon : {
+    textAlignVertical : 'bottom' ,
   },
 
   modalText : {
@@ -112,8 +151,8 @@ const styles = StyleSheet.create({
   },
 
   modalAmountInput : {
-    fontSize : 35,
-    fontWeight : 'bold',
+    fontSize : 40,
+    //fontWeight : 'bold',
     textAlign : 'center',
     borderBottomWidth : 2,
     borderEndColor : 'black',
@@ -126,12 +165,12 @@ const styles = StyleSheet.create({
     fontSize : 20,
     paddingTop : 30,
     padding : 5,
-    borderBottomWidth : 2,
+    borderBottomWidth : 1,
     borderEndColor : 'black',
     marginHorizontal : 30,
     color : '#4e544d',
   },
- 
+
   // SUBMIT BUTTON
   modalSubmitBtn : {
     borderRadius : 15,
@@ -149,6 +188,12 @@ const styles = StyleSheet.create({
     fontWeight : 'bold',
     padding : 10,
     paddingHorizontal : 20,
+  },
+
+  pickerOneContainer : {
+    flexDirection: 'row', 
+    alignSelf :'center',
+    paddingTop : 20,
   },
 
   errorStyle : {

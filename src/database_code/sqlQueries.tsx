@@ -5,13 +5,14 @@
 
 export const credit = {
 
-    createCreditQuery : 'CREATE TABLE IF NOT EXISTS "Credit" '+
-                        '("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
+    createCreditQuery : 'CREATE TABLE IF NOT EXISTS "Credit" ( '+
+                        '"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
                         '"credit_amount" smallint unsigned NOT NULL CHECK ("credit_amount" >= 0), '+
-                        '"credit_description" varchar(40) NOT NULL);',
+                        '"credit_description" varchar(40) NOT NULL, '+
+                        '"credit_type" varchar(6) NOT NULL );',
 
-    insertCreditQuery : 'INSERT INTO Credit( credit_amount,credit_description ) '+
-                        'VALUES(?,?);',
+    insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type ) '+
+                        'VALUES(?,?,?);',
 }
 
 export const pocket = {

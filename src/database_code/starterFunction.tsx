@@ -39,7 +39,7 @@ export function createCredit(){
   //
   queryExecutor( credit.createCreditQuery,  
                  null, 
-                 'Credit', 
+                 'Credit-C', 
                  (yo1)=>{} 
                )
 }

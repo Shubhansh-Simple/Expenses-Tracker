@@ -57,20 +57,26 @@ const TransactionScreen = () => {
   return (
     <View style={ styles.homeStyle }>
 
+      <Text style={{ fontSize : 20, textAlign : 'center'}}>All records</Text>
       <FlatList 
         data={data}
         keyExtractor={ item=>item.id.toString() }
         renderItem={(element)=>{
           return (
             <View style={ styles.itemContainer }>
-              <Text style={ styles.itemStyle }>{element.item.credit_amount}</Text>
-              <Text style={ styles.itemStyle }>{element.item.credit_description}</Text>
+              <Text style={ styles.itemStyle }>
+                Amount - {element.item.credit_amount}
+              </Text>
+              <Text style={ styles.itemStyle }>
+                Description - {element.item.credit_description}
+              </Text>
+              <Text style={ styles.itemStyle }>
+                Type - {element.item.credit_type}
+              </Text>
             </View>
           )
         }}
       />
-
-      <Text>No Data Found.</Text>
     </View>
   )  
 };

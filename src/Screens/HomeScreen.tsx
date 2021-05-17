@@ -37,13 +37,14 @@ const HomeScreen = ({navigation}) => {
   }
 
   const insertCredit = ( credit_amount : number,  
-                         credit_description : string ) => {
+                         credit_description : string,
+                         credit_type : string ) => {
     /*
      * INSERTING INTO
      * CREDIT TABLE
      */
     queryExecutor( credit.insertCreditQuery,
-                   [credit_amount,credit_description],
+                   [credit_amount,credit_description,credit_type],
                    'Credit-I',
                    ( databaseData )=>{ incrementPocket( credit_amount ) }
                  )
@@ -88,7 +89,7 @@ const HomeScreen = ({navigation}) => {
         submitBtnColor='#34b518'
         modalVisible={modalCreditVisible}
         setModalVisible={ (bool:boolean)=>{ setModalCreditVisible(bool) }}
-        submitData={ (data1,data2)=>{ insertCredit(+data1,data2) } }
+        submitData={ (data1,data2,data3)=>{ insertCredit(+data1,data2,data3) } }
       />
 
       <ModalComponent
@@ -97,7 +98,7 @@ const HomeScreen = ({navigation}) => {
         submitBtnColor='red'
         modalVisible={modalDebitVisible}
         setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) }}
-        submitData={ (data1,data2)=>{ console.log('Parent get data - ',data1,data2)} }
+        submitData={ (data1,data2,data3)=>{ console.log('Parent get data - ',data1,data2,data3)} }
       />
 
       {/* MAIN BUTTON SECTION STARTS */}

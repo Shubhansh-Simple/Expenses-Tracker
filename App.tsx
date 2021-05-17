@@ -15,7 +15,7 @@ import { createCredit,
          readingPocket }  from './src/database_code/starterFunction';
 
 
-global.db = SQLite.openDatabase('something2.db');
+global.db = SQLite.openDatabase('something.db');
 
 export default () => {
 
@@ -25,6 +25,7 @@ export default () => {
      * at the starting of app
      * CREATE TABLE IF NOT EXISTS
      */
+  console.log('App.tsx useEffect')
   createPocket()
   readingPocket()
   createCredit()
