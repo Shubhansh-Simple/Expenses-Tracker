@@ -13,7 +13,7 @@ import { pocket,credit } from '../database_code/sqlQueries';
 import queryExecutor     from '../database_code/starterFunction';
 
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation})  =>  {
 
   // REACT STATE 
   const [ currentBal, setCurrentBal ]     = useState(0);
@@ -24,7 +24,7 @@ const HomeScreen = ({navigation}) => {
 
 
   // DATABASE SECTION STARTS
-  const readingPocket = () => {
+  const readingPocket = ()  =>  {
     /*
      * READING Pocket
      * table
@@ -32,13 +32,13 @@ const HomeScreen = ({navigation}) => {
     queryExecutor( pocket.readPocketQuery+' WHERE id=1',
                    null,
                    'Pocket-R',
-                   ( databaseData )=>{ setCurrentBal(databaseData[0].currentBal) }
+                   databaseData => setCurrentBal(databaseData[0].currentBal)
                  )
   }
 
   const insertCredit = ( credit_amount : number,  
                          credit_description : string,
-                         credit_type : string ) => {
+                         credit_type : string )  =>  {
     /*
      * INSERTING INTO
      * CREDIT TABLE
@@ -46,12 +46,12 @@ const HomeScreen = ({navigation}) => {
     queryExecutor( credit.insertCreditQuery,
                    [credit_amount,credit_description,credit_type],
                    'Credit-I',
-                   ( databaseData )=>{ incrementPocket( credit_amount ) }
+                   databaseData => incrementPocket( credit_amount )
                  )
   }
 
 
-  const incrementPocket = ( valueAdd : number ) => {
+  const incrementPocket = ( valueAdd : number )  =>  {
     /*
      * ADDING balance to 
      * current balance
@@ -59,7 +59,7 @@ const HomeScreen = ({navigation}) => {
     queryExecutor( pocket.updatePocketQuery,
                    [currentBal + valueAdd],
                    'Pocket-U',
-                   ( databaseData )=>{ 
+                   databaseData => { 
                          setCurrentBal( currentBal + valueAdd )
                          console.log('Updated data successfully.'),
                          setModalCreditVisible(false)
@@ -69,7 +69,7 @@ const HomeScreen = ({navigation}) => {
 
   // DATABASE SECTION ENDS 
 
-  useEffect( ()=>{
+  useEffect( () => {
   /*
    * FIRST THING HAPPEN
    * AFTER LOADING
@@ -88,8 +88,8 @@ const HomeScreen = ({navigation}) => {
         modalTitle='Add Credit'
         submitBtnColor='#34b518'
         modalVisible={modalCreditVisible}
-        setModalVisible={ (bool:boolean)=>{ setModalCreditVisible(bool) }}
-        submitData={ (data1,data2,data3)=>{ insertCredit(+data1,data2,data3) } }
+        setModalVisible={ (bool:boolean)  =>  setModalCreditVisible(bool) }
+        submitData={ (data1,data2,data3) => insertCredit(+data1,data2,data3) }
       />
 
       <ModalComponent
@@ -97,8 +97,8 @@ const HomeScreen = ({navigation}) => {
         modalTitle='Add Expense'
         submitBtnColor='red'
         modalVisible={modalDebitVisible}
-        setModalVisible={ (bool:boolean)=>{ setModalDebitVisible(bool) }}
-        submitData={ (data1,data2,data3)=>{ console.log('Parent get data - ',data1,data2,data3)} }
+        setModalVisible={ (bool:boolean)  =>  setModalDebitVisible(bool) }
+        submitData={ (data1,data2,data3) => { console.log('Parent get data - ',data1,data2,data3)} }
       />
 
       {/* MAIN BUTTON SECTION STARTS */}
@@ -108,26 +108,29 @@ const HomeScreen = ({navigation}) => {
         <ButtonComponent 
           btnColor='#3ea832' 
           btnText='+' 
-          callModal={(bool : boolean )=>{ setModalCreditVisible(bool) }} 
+          callModal={(bool : boolean ) => setModalCreditVisible(bool)} 
         />
 
         <ButtonComponent 
           btnColor='#ff0022' 
           btnText='-' 
-          callModal={(bool : boolean )=>{ setModalDebitVisible(bool) }} 
+          callModal={(bool : boolean ) => setModalDebitVisible(bool)} 
         />
 
         <ButtonComponent 
           btnColor='black' 
           btnText='$' 
-          callModal={(bool : boolean )=>{ navigation.navigate('transaction') }} 
+          callModal={(bool : boolean ) => navigation.navigate('transaction')} 
         />
       </View>
 
       {/* MAIN BUTTON SECTION ENDS */}
 
       <Button title='Navigate' 
-              onPress={ ()=>{ navigation.navigate('reading') }} />
+              onPress={ () => { navigation.navigate('reading') }} />
+
+      <Button title='Source' 
+              onPress={ () => { navigation.navigate('source') }} />
 
       <View style={ styles.currentBalParentContainer }>
 

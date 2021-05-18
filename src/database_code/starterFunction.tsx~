@@ -41,8 +41,8 @@ const queryExecutor = ( sqlQuery:string,
  */
 
 export function createCredit(){
-  /* CREATING CREDIT TABLE */
-
+  // CREATING CREDIT TABLE 
+  //
   queryExecutor( credit.createCreditQuery,  
                  null, 
                  'Credit-C', 
@@ -55,8 +55,8 @@ export function createCredit(){
  */
 
 export function createPocket(){
-  /* CREATING POCKET TABLE */
-
+  //  CREATING TABLE IF IT'S NOT  EXIST
+  //
   queryExecutor( pocket.createPocketQuery,  
                  null,
                  'Pocket-C',
@@ -65,8 +65,8 @@ export function createPocket(){
 }
 
 function insertPocket(){
-  /* INSERT DEFAULT VALUE TO POCKET */
-
+  // INSERT DEFAULT VALUE TO POCKET 
+  //
   queryExecutor( pocket.insertPocketQuery, 
                  [1,0],  
                  'Pocket-I',
@@ -75,7 +75,9 @@ function insertPocket(){
 }
 
 function readingPocketHelper( data ){
-  /* callBack FUNCTION */
+  /*
+   * callBack FUNCTION
+   */
 
   console.log('Data through magic - ',data)
   
@@ -89,8 +91,8 @@ function readingPocketHelper( data ){
 }
 
 export function readingPocket(){
-  /* READING POCKET TABLE */
-
+  // READING POCKET TABLE
+  //
   queryExecutor( pocket.readPocketQuery, 
                  null, 
                  'Pocket-R',
@@ -104,8 +106,8 @@ export function readingPocket(){
  */
 
 export function createSource(){
-  /* CREATE TABLE IF NOT EXIST */
-
+  // CREATE TABLE IF NOT EXIST
+  //
   queryExecutor( source.createSourceQuery, 
                   null, 
                   'Source-C',

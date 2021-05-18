@@ -15,6 +15,16 @@ export const credit = {
                         'VALUES(?,?,?);',
 }
 
+export const source = {
+    
+  createSourceQuery : 'CREATE TABLE IF NOT EXISTS "Source" ( '+
+                      '"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
+                      '"source_name" varchar(20) NOT NULL );',
+
+  readSourceQuery   : 'SELECT * FROM SOURCE;',
+
+}
+
 export const pocket = {
 
   createPocketQuery : 'CREATE TABLE IF NOT EXISTS "Pocket" '+
