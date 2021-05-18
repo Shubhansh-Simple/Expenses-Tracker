@@ -4,13 +4,17 @@ import { View,
          Modal,
          Button,
          TouchableOpacity,
+         TouchableWithoutFeedback,
          FlatList,
          StyleSheet } from 'react-native';
+
+import { Entypo } from '@expo/vector-icons';
 
 const ReadDatabaseScreen = () => {
   
 
   const [ modal, setModal ] = useState(false)
+  const [ dropDown, setDropDown ] = useState('Select a value')
 
   const flatData = [
     { title : 'One' },
@@ -29,7 +33,7 @@ const ReadDatabaseScreen = () => {
   }
 
   return (
-    <View style={{ margin:10,padding:20 }}>
+    <View style={{ margin:10,padding:20, alignItems:'center' }}>
 
       <Text style={ styles.textStyle }>
         It's just an extra screen for practice
@@ -37,11 +41,12 @@ const ReadDatabaseScreen = () => {
 
       <Button title='Call Query' onPress={readSQL} />
 
-      <Button 
-        title='Call Modal' 
-        color='black'
-        onPress={ ()=>{setModal(true)} }
-      />
+      <TouchableOpacity onPress={()=>{setModal(true)} }>
+        <View style={{ flexDirection:'row',padding : 20 }}>
+          <Text style={{ fontSize : 20 }}>{ dropDown }</Text>
+          <Entypo name='arrow-down' size={30} style={{ textAlignVertical : 'center'}} />
+        </View>
+      </TouchableOpacity>
 
      <Modal
         visible={modal}
@@ -60,16 +65,15 @@ const ReadDatabaseScreen = () => {
         onRequestClose={()=>{ setModal(false) }}
       >
         <View style={ styles.modalContainer }>
-    
-          
+        
           <View style={{
             backgroundColor : 'white',
             borderRadius : 20,
           }}>
 
             <View style={ styles.modalHeader }>
-              <Text style={{ fontSize : 15, fontWeight : 'bold'}}>
-                Which one you like ? 
+              <Text style={{ fontSize : 16, fontWeight : 'bold'}}>
+                Choose a option below 
               </Text>
             </View>
 
@@ -80,10 +84,12 @@ const ReadDatabaseScreen = () => {
 
               <FlatList 
                 data={ flatData }
+                keyExtractor={ item=>item.title }
                 renderItem={(element)=>{
                   return (
                     <TouchableOpacity onPress={ ()=>{ 
                         console.log( 'I hope so - ',element.item.title.toLowerCase() )
+                        setDropDown( element.item.title.toLowerCase() )
                         setModal(false)
                       }}>
                       <Text style={ styles.flatListItem }>
@@ -98,13 +104,13 @@ const ReadDatabaseScreen = () => {
 
           </View> 
 
-          <View style={ styles.modalCancelButton }>
-            <TouchableOpacity onPress={()=>{ setModal(false)  }}>
+          <TouchableWithoutFeedback onPress={()=>{ setModal(false)  }}>
+            <View style={ styles.modalCancelButton }>
               <Text style={ styles.modalCancelButtonText }>
                 Cancel
               </Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableWithoutFeedback>
 
         </View>
       </Modal>
@@ -133,7 +139,9 @@ const styles = StyleSheet.create({
   flatListItem : {
     fontSize : 18,
     color:'#496ae3',
-    padding:10 
+    alignSelf : 'stretch',
+    padding:10,
+    textAlign : 'center',
   },
 
   modalCancelButton : {
