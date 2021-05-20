@@ -6,13 +6,16 @@ import { View,
          ScrollView,
          StyleSheet } from 'react-native';
 
-import { Entypo } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons'; 
 
 // LOCAL
 import AlertComponent from '../components/AlertComponent';
+import PopupInput     from '../components/PopupInput';
 
 const SourceScreen = () => {
 
+
+  const [ modalPopup, setModalPopup ] = useState(false)
   const [ modalAlert, setModalAlert ] = useState(false)
 
   function autoHide( timout:number ){
@@ -21,7 +24,15 @@ const SourceScreen = () => {
 
   return (
     <View style={{ flex:1 }}>
-      
+
+      <PopupInput 
+        popupTitle='Category Name'
+        popupDescription='Choose a short & meaningful name '
+        popupPlaceholder='Type your name here...'
+        popupVisible={modalPopup}
+        setPopupVisible={ (bool:boolean)=> setModalPopup(bool) }
+      />
+     
       <AlertComponent
         alertMsg='Successfully Created!'
         alertVisible={ modalAlert }
@@ -29,12 +40,13 @@ const SourceScreen = () => {
       />
 
       <View style={ styles.buttonContainer }>
-        <TouchableOpacity onPress={ ()=>{ setModalAlert(true)
-                                          autoHide(2000) }
+        <TouchableOpacity onPress={ ()=>{ setModalPopup(true)
+                                          autoHide(2000) 
+                                        }
         }>
-          <Entypo 
-            name="circle-with-plus" 
-            size={80} 
+          <AntDesign 
+            name="pluscircle" 
+            size={60} 
             color="#fc035e" 
           />
         </TouchableOpacity>

@@ -3,8 +3,8 @@ import React,{useEffect} from 'react';
 // FOR NAVIGATION
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AntDesign } from '@expo/vector-icons'; 
-import { View, TouchableOpacity, Text } from 'react-native';
+//import { AntDesign } from '@expo/vector-icons'; 
+//import { View, TouchableOpacity, Text } from 'react-native';
 
 import * as SQLite from 'expo-sqlite';
 

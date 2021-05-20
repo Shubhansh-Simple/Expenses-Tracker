@@ -57,7 +57,7 @@ const ModalComponent = ({ modalVisible,
             style={ styles.modalIcon }
             size={50}
             color='#353b34'
-            onPress={()=>{setModalVisible(false)}}
+            onPress={ ()=>setModalVisible(false) }
           />
         </View>
 
@@ -194,13 +194,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignSelf :'center',
     paddingTop : 20,
-  },
-
-  errorStyle : {
-    alignSelf : 'center',
-    fontSize : 15,
-    color : 'red',
-    marginBottom : 5,
   },
 
 });
