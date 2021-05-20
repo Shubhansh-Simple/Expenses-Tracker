@@ -18,10 +18,11 @@ import ButtonComponent from './ButtonComponent';
 const PopupInput = ({ popupTitle,
                       popupDescription,
                       popupPlaceholder,
-
                       // STATE
                       popupVisible,
                       setPopupVisible,
+                      // output
+                      submitData
                        })  =>  {
 
   const [ nameInput, setNameInput  ] = useState('')
@@ -105,7 +106,7 @@ const PopupInput = ({ popupTitle,
 
               <TouchableOpacity
                 onPress={ ()=>{ setPopupVisible(false)
-                                console.log('The value is ',nameInput)
+                                submitData(nameInput)                    
                 }}
               >
                 <PopupButton buttonText='Submit' />

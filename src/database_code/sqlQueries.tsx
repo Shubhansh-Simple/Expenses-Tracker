@@ -21,6 +21,8 @@ export const source = {
                       '"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
                       '"source_name" varchar(20) NOT NULL );',
 
+  insertSourceQuery : 'INSERT INTO Source( source_name ) VALUES(?);',
+
   readSourceQuery   : 'SELECT * FROM SOURCE;',
 
 }
