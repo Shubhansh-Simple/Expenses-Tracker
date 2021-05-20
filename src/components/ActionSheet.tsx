@@ -3,7 +3,7 @@
  * ACTIONSHEET CTRL
  * FROM SCRATCH
  */
-import React, {useState} from 'react';
+import React from 'react';
 import { View, 
          TouchableOpacity, 
          TouchableWithoutFeedback,
@@ -11,6 +11,8 @@ import { View,
          FlatList,
          Text,
          Modal } from 'react-native';
+
+import BlackScreen from './BlackScreen';
 
 const ActionSheet = ({ sheetTitle,
                        sheetDescription,
@@ -25,18 +27,10 @@ const ActionSheet = ({ sheetTitle,
     <View>
 
       {/* BACKGROUND MODAL */}
-      <Modal
-        visible={sheetVisible}
-        animationType='fade'
-        transparent={true}
-        onRequestClose={ ()=>{ setSheetVisible(false) } }
-      >
-        <View style={{ 
-          flex:1,
-          backgroundColor:'rgba(52,52,52,0.9)'}}
-        >
-        </View>
-      </Modal>
+      <BlackScreen 
+        modalVisible={sheetVisible}
+        setModalVisible={ (bool:boolean)=>setSheetVisible(bool) }
+      />
 
       {/* FOREGROUND MODAL */}
       <Modal
@@ -52,12 +46,12 @@ const ActionSheet = ({ sheetTitle,
             {/* HEADER */}
             <View style={ styles.modalHeader }>
 
-              <Text style={{ fontSize:14, fontWeight: 'bold', paddingVertical:5}}> 
+              <Text style={ styles.modalTitle }> 
                 { sheetTitle }
               </Text>
 
               { sheetDescription 
-                ?  <Text style={{ fontSize:14, color:'#4e544d', paddingVertical:5}}>
+                ?  <Text style={ styles.modalDescription }>
                     ({ sheetDescription })
                   </Text>
                 : null
@@ -124,6 +118,18 @@ const styles = StyleSheet.create({
   modalHeader : {
     alignItems : 'center',
     padding : 10,
+  },
+
+  modalTitle : {
+    fontSize : 14, 
+    fontWeight: 'bold', 
+    paddingVertical : 5,
+  },
+
+  modalDescription : {
+    fontSize : 14, 
+    color:'#4e544d', 
+    paddingVertical : 5,
   },
 
   modalBody: {
