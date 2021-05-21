@@ -32,8 +32,8 @@ const ModalComponent = ({ modalVisible,
   //const [ errorText, errorTextSet ]       = useState('Default Error Style');
   
   const pickerOneData = [
-    { title : 'Cash'  , value : 'Cash'  },
-    { title : 'Online', value : 'Online' },
+    { title : 'Cash'  , id : 'Cash'  },
+    { title : 'Online', id : 'Online' },
   ]
 
   return (
@@ -84,6 +84,7 @@ const ModalComponent = ({ modalVisible,
         <ActionSheet 
           sheetTitle='Choose any option'
           sheetDescription='Ensure user what type of cash it is.'
+          listItemColor = '#0095ff'
           sheetData={pickerOneData}
           sheetVisible={pickerOne}
           setSheetVisible={ (bool:boolean)=>setPickerOne(bool) }

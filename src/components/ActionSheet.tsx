@@ -17,6 +17,7 @@ import BlackScreen from './BlackScreen';
 const ActionSheet = ({ sheetTitle,
                        sheetDescription,
                        sheetData,
+                       listItemColor,
                     //------------------
                        sheetVisible,
                        setSheetVisible,
@@ -67,19 +68,23 @@ const ActionSheet = ({ sheetTitle,
                 renderItem={ (element)=>{
                   return (
                     <TouchableOpacity onPress={ ()=>{
-                      console.log('Action - ',element.item.value)
-                      sheetSelectedItem(element.item.value)
+                      sheetSelectedItem(element.item.id)
                       setSheetVisible(false)
-                      }
-                      }>
-                      <Text style={ styles.flatListItem }>
+                    }}>
+                      <Text style={[
+                        styles.flatListItem, 
+                        { color: listItemColor } 
+                      ]}>
                         { element.item.title }
                       </Text>
+
+                      {/* ST. LINE*/}
                       <View style={{ 
                         borderBottomColor:'#f0ede6',
                         borderBottomWidth:2,
                         }}>
                       </View>
+
                     </TouchableOpacity>
                   )
                 }}
@@ -139,7 +144,6 @@ const styles = StyleSheet.create({
 
   flatListItem : {
     fontSize : 18,
-    color : '#0095ff',
     alignSelf : 'stretch',
     padding : 10,
     textAlign : 'center',

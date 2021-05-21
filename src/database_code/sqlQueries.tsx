@@ -25,6 +25,8 @@ export const source = {
 
   readSourceQuery   : 'SELECT * FROM SOURCE;',
 
+  deleteSourceQuery : 'DELETE FROM SOURCE WHERE id=?;',
+
 }
 
 export const pocket = {

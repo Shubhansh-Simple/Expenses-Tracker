@@ -6,28 +6,43 @@ import { View,
          Text,
          StyleSheet } from 'react-native';
 
-import { AntDesign } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'; 
 
+// DATABASE
 import queryExecutor from '../database_code/starterFunction';
 import {source}      from '../database_code/sqlQueries';
 
 // LOCAL
+import ActionSheet    from '../components/ActionSheet';
 import AlertComponent from '../components/AlertComponent';
 import PopupInput     from '../components/PopupInput';
 
 const SourceScreen = () => {
 
   const [ dataSource, setDataSource ] = useState([])
+
   const [ modalPopup, setModalPopup ] = useState(false)
+
+  // SUCCESS POPUP'S
+  const [ alertMsg, setAlertMsg ]     = useState('')
   const [ modalAlert, setModalAlert ] = useState(false)
+  
+  // ActionSheet for delete
+  const [ actionDel , setActionDel ] = useState(false)
+  const [ actionDelData , setActionDelData ] = useState([])
 
 
-  function autoHide( timout:number ){
+  function autoHideMsg( msg:string, timout:number ){
     /*
      * Auto hides the Alert Popup
      */
-    setTimeout( ()=>{setModalAlert(false) }, timout )
+    readingSource()
+    setAlertMsg(msg)
+    setModalAlert(true)
+
+    setTimeout( ()=>setModalAlert(false), timout )
   }
+
 
   const readingSource = () => {
     /*
@@ -42,6 +57,35 @@ const SourceScreen = () => {
                  )
   }
 
+
+  const updatingSource = ( itemId : number ) => {
+    /*
+  	 * UPDATING FROM
+  	 * SOURCE TABLE
+  	 */
+
+    queryExecutor( source.updateSourceQuery,
+                   [ itemId ],
+                   'Source-U',
+                   databaseData=>console.log('Update Data returned - ',databaseData)
+                 )
+  }
+
+
+  const deleteSource = ( itemId:number ) => {
+    /*
+  	 * DELETE FROM
+  	 * SOURCE TABLE
+  	 */
+
+    queryExecutor( source.deleteSourceQuery,
+                   [ itemId ],
+                   'Source-D',
+                   databaseData=>autoHideMsg('Successfully Deleted',2000) 
+                 )
+  }
+
+
   const insertSource = ( source_name : string ) => {
 
   	/*
@@ -52,9 +96,7 @@ const SourceScreen = () => {
   	queryExecutor( source.insertSourceQuery, 
 				   [ source_name ],
                    'Source-I',
-                   databaseData =>{ setModalAlert(true) 
-                                    readingSource()
-                                    autoHide(2000) }
+                   databaseData=>autoHideMsg('Successfully Added',2000) 
                  )
   }
 
@@ -77,16 +119,42 @@ const SourceScreen = () => {
         renderItem={(element)=>{
           return (
             <View style={ styles.itemContainer }>
-              <Text style={ styles.itemStyle }>
-                 {element.item.source_name}
-              </Text>
-              <AntDesign name='edit' size={34} color='green' />
-              <AntDesign name='delete' size={34} color='red' />
+
+              <View style={{ flex : 10,}}>
+
+                <TouchableOpacity onPress={ ()=>setModalPopup(true) }>
+                  <Text style={ styles.itemStyle }>
+                     {element.item.source_name}
+                  </Text>
+                </TouchableOpacity>
+
+              </View>
+
+              <View style={ styles.iconContainer }>
+               
+                <TouchableOpacity onPress={()=>
+                  { setActionDelData(
+                      [ 
+                        { 
+                          title :'Delete '+ element.item.source_name,
+                          id : element.item.id 
+                        }
+                      ]
+                    ) 
+                    setActionDel( true )
+                  }
+                }>
+
+                  <MaterialCommunityIcons name='delete' size={24} color='white' />
+                </TouchableOpacity>
+              </View>
+
             </View>
           )
         }}
       />
-
+      
+      {/* COMPONENT */}
       <PopupInput 
         popupTitle='Category Name'
         popupDescription='Choose a short & meaningful name '
@@ -96,10 +164,22 @@ const SourceScreen = () => {
         submitData={ (data:string)=>insertSource(data) }
       />
      
+      {/* COMPONENT */}
       <AlertComponent
-        alertMsg='Successfully Created!'
-        alertVisible={ modalAlert }
-        setAlertVisible={ (bool:boolean)=>setModalAlert(bool) }
+        alertMsg = { alertMsg }
+        alertVisible = { modalAlert }
+        setAlertVisible = { (bool:boolean)=>setModalAlert(bool) }
+      />
+
+      {/* COMPONENT */}
+      <ActionSheet 
+        sheetTitle='Are You Sure ?'
+        sheetDescription=''
+        listItemColor = 'red'
+        sheetData={ actionDelData }
+        sheetVisible={ actionDel }
+        setSheetVisible={ (bool:boolean)=>setActionDel(bool) }
+        sheetSelectedItem={ itemId=>deleteSource( +itemId ) }
       />
 
       <View style={ styles.buttonContainer }>
@@ -121,6 +201,7 @@ const styles = StyleSheet.create({
   itemStyle : {
     fontSize : 20,
     textAlign : 'center',
+    color : '#1d6cf5',
     textAlignVertical : 'center',
   },
 
@@ -130,11 +211,19 @@ const styles = StyleSheet.create({
     backgroundColor : 'white',
     margin : 5,
     flexDirection : 'row',
-    justifyContent : 'space-between',
+    justifyContent : 'space-around',
     shadowColor : 'black',
     shadowOffset : { width:2, height:2 },
     shadowOpacity : 0.9
 
+  },
+
+  iconContainer : {
+    flex : 1, 
+    backgroundColor : 'red',
+    padding : 4,
+    paddingVertical : 6,
+    borderRadius : 10,
   },
   buttonContainer : {
     position : 'absolute',
