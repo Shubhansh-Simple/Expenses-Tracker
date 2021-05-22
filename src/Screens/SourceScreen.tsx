@@ -17,22 +17,27 @@ import ActionSheet    from '../components/ActionSheet';
 import AlertComponent from '../components/AlertComponent';
 import PopupInput     from '../components/PopupInput';
 
+
 const SourceScreen = () => {
 
   const [ dataSource, setDataSource ] = useState([])
 
-  const [ modalPopup, setModalPopup ] = useState(false)
+  // POPUP INPUT
+  const [ modalPopup, setModalPopup ]            = useState(false)
+  const [ popupDefaultTxt , setPopupDefaultTxt ] = useState('')
+  const [ itemId , setItemId ] = useState(0)
 
   // SUCCESS POPUP'S
   const [ alertMsg, setAlertMsg ]     = useState('')
   const [ modalAlert, setModalAlert ] = useState(false)
   
   // ActionSheet for delete
-  const [ actionDel , setActionDel ] = useState(false)
+  const [ actionDel , setActionDel ]         = useState(false)
   const [ actionDelData , setActionDelData ] = useState([])
 
-
-  function autoHideMsg( msg:string, timout:number ){
+  //-----------------FUNCTIONS STARTS-----------------
+  
+  function autoHideMsg( msg:string, timeout:number ){
     /*
      * Auto hides the Alert Popup
      */
@@ -40,7 +45,14 @@ const SourceScreen = () => {
     setAlertMsg(msg)
     setModalAlert(true)
 
-    setTimeout( ()=>setModalAlert(false), timout )
+    setTimeout( ()=>setModalAlert(false), timeout )
+  }
+
+  function Decider( data:string ){
+    /*
+     * ID there then UPDATE otherwise INSERT
+     */
+    { itemId ? updatingSource( data, itemId ) : insertSource( data ) }
   }
 
 
@@ -58,16 +70,16 @@ const SourceScreen = () => {
   }
 
 
-  const updatingSource = ( itemId : number ) => {
+  const updatingSource = ( source_name:string, itemId : number ) => {
     /*
   	 * UPDATING FROM
   	 * SOURCE TABLE
   	 */
 
     queryExecutor( source.updateSourceQuery,
-                   [ itemId ],
+                   [ source_name,itemId ],
                    'Source-U',
-                   databaseData=>console.log('Update Data returned - ',databaseData)
+                   databaseData=>autoHideMsg('Successfully Updated',2000)
                  )
   }
 
@@ -100,6 +112,8 @@ const SourceScreen = () => {
                  )
   }
 
+  //-----------------FUNCTIONS ENDS-----------------
+
   useEffect( () => {
     /*
      * FIRST THING HAPPEN
@@ -109,7 +123,6 @@ const SourceScreen = () => {
     readingSource()
   },[])
 
-
   return (
     <View style={{ flex:1, padding : 15, backgroundColor :'#e6e6e6'  }}>
 
@@ -117,12 +130,17 @@ const SourceScreen = () => {
         data={dataSource}
         keyExtractor={ item=>item.id.toString() }
         renderItem={(element)=>{
+
           return (
             <View style={ styles.itemContainer }>
 
               <View style={{ flex : 10,}}>
 
-                <TouchableOpacity onPress={ ()=>setModalPopup(true) }>
+                <TouchableOpacity onPress={ ()=>{ 
+                  setItemId( element.item.id )
+                  setPopupDefaultTxt( element.item.source_name )
+                  setModalPopup(true) 
+                }}>
                   <Text style={ styles.itemStyle }>
                      {element.item.source_name}
                   </Text>
@@ -134,12 +152,10 @@ const SourceScreen = () => {
                
                 <TouchableOpacity onPress={()=>
                   { setActionDelData(
-                      [ 
-                        { 
+                      [{ 
                           title :'Delete '+ element.item.source_name,
                           id : element.item.id 
-                        }
-                      ]
+                      }]
                     ) 
                     setActionDel( true )
                   }
@@ -154,36 +170,44 @@ const SourceScreen = () => {
         }}
       />
       
-      {/* COMPONENT */}
+      {/* INPUT COMPONENT */}
       <PopupInput 
-        popupTitle='Category Name'
-        popupDescription='Choose a short & meaningful name '
-        popupPlaceholder='Type your name here...'
-        popupVisible={modalPopup}
-        setPopupVisible={ (bool:boolean)=> setModalPopup(bool) }
-        submitData={ (data:string)=>insertSource(data) }
+        popupTitle       = 'Category Name'
+        popupDescription = 'Choose a short & meaningful name '
+        popupPlaceholder = 'Type your name here...'
+        //
+        defaulty         = {popupDefaultTxt}
+        //
+        popupVisible     = {modalPopup}
+        setPopupVisible  = { (bool:boolean) => setModalPopup(bool) }
+
+        submitData       = { (data:string)=>Decider(data) }
+
       />
      
-      {/* COMPONENT */}
+      {/* MSG COMPONENT */}
       <AlertComponent
-        alertMsg = { alertMsg }
-        alertVisible = { modalAlert }
+        alertMsg        = { alertMsg }
+        alertVisible    = { modalAlert }
         setAlertVisible = { (bool:boolean)=>setModalAlert(bool) }
       />
 
-      {/* COMPONENT */}
+      {/* CHOICE COMPONENT */}
       <ActionSheet 
-        sheetTitle='Are You Sure ?'
-        sheetDescription=''
-        listItemColor = 'red'
-        sheetData={ actionDelData }
-        sheetVisible={ actionDel }
-        setSheetVisible={ (bool:boolean)=>setActionDel(bool) }
-        sheetSelectedItem={ itemId=>deleteSource( +itemId ) }
+        sheetTitle         = 'Are You Sure ?'
+        sheetDescription   = ''
+        listItemColor      =  'red'
+        sheetData          = { actionDelData }
+        sheetVisible       = { actionDel }
+        setSheetVisible    = { (bool:boolean)=>setActionDel(bool) }
+        sheetSelectedItem  = { itemId=>deleteSource( +itemId ) }
       />
 
       <View style={ styles.buttonContainer }>
-        <TouchableOpacity onPress={ ()=>setModalPopup(true) }>
+        <TouchableOpacity onPress={ ()=>{ setPopupDefaultTxt('') 
+                                          setItemId(0)
+                                          setModalPopup(true) }
+        }>
           <AntDesign 
             name="pluscircle" 
             size={60} 
@@ -206,7 +230,8 @@ const styles = StyleSheet.create({
   },
 
   itemContainer : {
-    padding : 20,
+    padding : 10,
+    paddingVertical : 10,
     borderRadius : 20,
     backgroundColor : 'white',
     margin : 5,

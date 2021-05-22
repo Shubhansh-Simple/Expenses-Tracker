@@ -23,6 +23,8 @@ export const source = {
 
   insertSourceQuery : 'INSERT INTO Source( source_name ) VALUES(?);',
 
+  updateSourceQuery : 'UPDATE Source SET source_name=? WHERE id=?',
+
   readSourceQuery   : 'SELECT * FROM SOURCE;',
 
   deleteSourceQuery : 'DELETE FROM SOURCE WHERE id=?;',

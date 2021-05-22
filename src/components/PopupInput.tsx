@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState,useEffect } from 'react';
 
 import { View, 
          Text,
@@ -12,12 +12,12 @@ import reuseStyle      from '../Styles/reuseStyle';
 
 import BlackScreen     from './BlackScreen';
 import PopupButton     from './PopupButton';
-import ButtonComponent from './ButtonComponent';
 
 
 const PopupInput = ({ popupTitle,
                       popupDescription,
                       popupPlaceholder,
+                      defaulty,
                       // STATE
                       popupVisible,
                       setPopupVisible,
@@ -26,7 +26,18 @@ const PopupInput = ({ popupTitle,
                        })  =>  {
 
   const [ nameInput, setNameInput  ] = useState('')
-  const [ error, setError ] = useState('')
+  //const [ error, setError ] = useState('')
+
+
+  useEffect( () => {
+    /*
+     * FIRST THING HAPPEN
+     * AFTER LOADING
+     * THIS SCREEN
+     */
+    setNameInput(defaulty)
+  },[ defaulty ])
+
 
   return (
     <View>
@@ -57,11 +68,11 @@ const PopupInput = ({ popupTitle,
 
 
             {/* SOURCE NAME INPUT */}
-            <TextInput 
-              placeholder={popupPlaceholder}
+            <TextInput
+              placeholder = 'Type your name here....'
               placeholderTextColor='#dedede'
+              onChangeText={ inputValue=>setNameInput(inputValue) }
               value={ nameInput }
-              onChangeText={inputValue=>setNameInput(inputValue)}
               style={ styles.modalNameInput } 
             />
 
@@ -104,6 +115,7 @@ const PopupInput = ({ popupTitle,
                 }}>
               </View>
 
+              {/* SUBMIT BUTTON */}
               <TouchableOpacity
                 onPress={ ()=>{ setPopupVisible(false)
                                 submitData(nameInput)                    
