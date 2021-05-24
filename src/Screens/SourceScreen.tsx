@@ -20,7 +20,12 @@ import PopupInput     from '../components/PopupInput';
 
 const SourceScreen = () => {
 
+  /*****************
+   * REACT'S STATE *
+   *****************/
+
   const [ dataSource, setDataSource ] = useState([])
+  const [ icon,       setIcon ]       = useState('pluscircle')
 
   // POPUP INPUT
   const [ modalPopup, setModalPopup ]            = useState(false)
@@ -35,7 +40,9 @@ const SourceScreen = () => {
   const [ actionDel , setActionDel ]         = useState(false)
   const [ actionDelData , setActionDelData ] = useState([])
 
-  //-----------------FUNCTIONS STARTS-----------------
+  /************
+   * FUNCTION *
+   ***********/
   
   function autoHideMsg( msg:string, timeout:number ){
     /*
@@ -179,7 +186,9 @@ const SourceScreen = () => {
         defaulty         = {popupDefaultTxt}
         //
         popupVisible     = {modalPopup}
-        setPopupVisible  = { (bool:boolean) => setModalPopup(bool) }
+        setPopupVisible  = { (bool:boolean)=> { setModalPopup(bool)
+                                                setIcon('pluscircle')
+                           }}
 
         submitData       = { (data:string)=>Decider(data) }
 
@@ -196,7 +205,7 @@ const SourceScreen = () => {
       <ActionSheet 
         sheetTitle         = 'Are You Sure ?'
         sheetDescription   = ''
-        listItemColor      =  'red'
+        listItemColor      = 'red'
         sheetData          = { actionDelData }
         sheetVisible       = { actionDel }
         setSheetVisible    = { (bool:boolean)=>setActionDel(bool) }
@@ -204,12 +213,15 @@ const SourceScreen = () => {
       />
 
       <View style={ styles.buttonContainer }>
-        <TouchableOpacity onPress={ ()=>{ setPopupDefaultTxt('') 
+        <TouchableOpacity onPress={ ()=>{ 
+                                          setIcon('closecircle')
+                                          setPopupDefaultTxt('') 
                                           setItemId(0)
-                                          setModalPopup(true) }
+                                          setModalPopup(true) 
+                                        }
         }>
           <AntDesign 
-            name="pluscircle" 
+            name={icon}
             size={60} 
             color="#fc035e" 
           />
@@ -246,8 +258,7 @@ const styles = StyleSheet.create({
   iconContainer : {
     flex : 1, 
     backgroundColor : 'red',
-    padding : 4,
-    paddingVertical : 6,
+    padding : 5,
     borderRadius : 10,
   },
   buttonContainer : {
