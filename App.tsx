@@ -1,18 +1,17 @@
-import React,{useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 // FOR NAVIGATION
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-//import { AntDesign } from '@expo/vector-icons'; 
-//import { View, TouchableOpacity, Text } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import * as SQLite from 'expo-sqlite';
 
 // LOCAL
 import HomeScreen         from './src/Screens/HomeScreen';
-import ReadDatabaseScreen from './src/Screens/ReadDatabaseScreen';
+//import ReadDatabaseScreen from './src/Screens/ReadDatabaseScreen';
 import TransactionScreen  from './src/Screens/TransactionScreen';
 import SourceScreen  from      './src/Screens/SourceScreen';
+import AboutScreen    from './src/Screens/AboutScreen';
 
 import { createCredit, 
          createPocket,
@@ -30,7 +29,6 @@ export default () => {
      * Execute only once
      * at the starting of app
      */
-
     createPocket()
     readingPocket()
     createCredit()
@@ -39,69 +37,30 @@ export default () => {
   },[]) 
 
 
-  const Stack = createStackNavigator()
+  const Tab   = createBottomTabNavigator()
 
   return (
     <NavigationContainer>
-  
-      {/* ALL SCREENS STYLE SETTINGS */}
-      <Stack.Navigator screenOptions={{
-
-          headerStyle : {
-            backgroundColor : '#fc035e',
+      <Tab.Navigator
+        tabBarOptions={{
+          
+          style : {
+            backgroundColor : '#393b39',
           },
 
-          headerTitleAlign : 'center',
-
-          headerTitleStyle : {
-            fontSize : 22,
+          labelStyle : {
+            fontSize : 13,
+            textTransform : 'capitalize',
             color : 'white',
-          }
-        
-      }}>
-
-        {/* DJANGO's URLS.PY */}
-        {/* Just CHANGING the sequence */}
-
-        <Stack.Screen
-          name='source'
-          component={SourceScreen}
-          options={{ 
-            title:'Source Page',
-              /*
-              headerRight: ()=> (
-                <View style={{}}>
-                  <TouchableOpacity>
-				    <AntDesign name="plus" size={30} color="white" />
-                  </TouchableOpacity>
-                </View>
-            ),*/
-          }}
-        />
-
-        <Stack.Screen
-          name='home'
-          component={HomeScreen}
-          options={{title:'Laxmi Manager'}}
-        />
-
-       <Stack.Screen
-          name='reading'
-          component={ReadDatabaseScreen}
-          options={ {title:'Laxmi Manager'}}
-        />
-
-        <Stack.Screen
-          name='transaction'
-          component={TransactionScreen}
-          options={{title:'Transactions'}}
-        />
-
-      </Stack.Navigator>
-
+          },
+        }}
+	  >
+        <Tab.Screen name='home'        component={ HomeScreen} />
+        <Tab.Screen name='source'      component={ SourceScreen} />
+        <Tab.Screen name='transaction' component={ TransactionScreen } />
+        <Tab.Screen name='about'       component={ AboutScreen } />
+      </Tab.Navigator>
     </NavigationContainer>
   )
 };
-
-
 
