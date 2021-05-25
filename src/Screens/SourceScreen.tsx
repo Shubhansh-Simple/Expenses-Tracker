@@ -13,6 +13,7 @@ import queryExecutor from '../database_code/starterFunction';
 import {source}      from '../database_code/sqlQueries';
 
 // LOCAL
+import NoDataFound     from '../components/NoDataFound';
 import ActionSheet    from '../components/ActionSheet';
 import AlertComponent from '../components/AlertComponent';
 import PopupInput     from '../components/PopupInput';
@@ -131,52 +132,67 @@ const SourceScreen = () => {
   },[])
 
   return (
-    <View style={{ flex:1, padding : 15, backgroundColor :'#e6e6e6'  }}>
+    <View style={{flex : 1}}>
 
-      <FlatList 
-        data={dataSource}
-        keyExtractor={ item=>item.id.toString() }
-        renderItem={(element)=>{
-
-          return (
-            <View style={ styles.itemContainer }>
-
-              <View style={{ flex : 10,}}>
-
-                <TouchableOpacity onPress={ ()=>{ 
-                  setItemId( element.item.id )
-                  setPopupDefaultTxt( element.item.source_name )
-                  setModalPopup(true) 
-                }}>
-                  <Text style={ styles.itemStyle }>
-                     {element.item.source_name}
-                  </Text>
-                </TouchableOpacity>
-
-              </View>
-
-              <View style={ styles.iconContainer }>
-               
-                <TouchableOpacity onPress={()=>
-                  { setActionDelData(
-                      [{ 
-                          title :'Delete '+ element.item.source_name,
-                          id : element.item.id 
-                      }]
-                    ) 
-                    setActionDel( true )
-                  }
-                }>
-
-                  <MaterialCommunityIcons name='delete' size={24} color='white' />
-                </TouchableOpacity>
-              </View>
-
-            </View>
-          )
-        }}
+      {/* CONDITIONAL CODE */}
+      { dataSource.length === 0 
+          ?
+      <NoDataFound 
+          dataTitle='No Sources Found !'
+          dataDescription='Kindly add some sources first'
+          emojiName='emoji-neutral'
+          emojiSize={84}
       />
-      
+          :
+      <View style={ styles.screenContainer }>
+
+        <FlatList 
+          data={dataSource}
+          keyExtractor={ item=>item.id.toString() }
+          renderItem={(element)=>{
+
+            return (
+              <View style={ styles.itemContainer }>
+
+                <View style={{ flex : 10,}}>
+
+                  <TouchableOpacity onPress={ ()=>{ 
+                    setItemId( element.item.id )
+                    setPopupDefaultTxt( element.item.source_name )
+                    setModalPopup(true) 
+                  }}>
+                    <Text style={ styles.itemStyle }>
+                       {element.item.source_name}
+                    </Text>
+                  </TouchableOpacity>
+
+                </View>
+
+                <View style={ styles.iconContainer }>
+                 
+                  <TouchableOpacity onPress={()=>
+                    { setActionDelData(
+                        [{ 
+                            title :'Delete '+ element.item.source_name,
+                            id : element.item.id 
+                        }]
+                      ) 
+                      setActionDel( true )
+                    }
+                  }>
+
+                    <MaterialCommunityIcons name='delete' size={24} color='white' />
+                  </TouchableOpacity>
+                </View>
+
+              </View>
+            )
+          }}
+        />
+
+        </View>
+      }
+        
       {/* INPUT COMPONENT */}
       <PopupInput 
         popupTitle       = 'Category Name'
@@ -193,7 +209,7 @@ const SourceScreen = () => {
         submitData       = { (data:string)=>Decider(data) }
 
       />
-     
+      
       {/* MSG COMPONENT */}
       <AlertComponent
         alertMsg        = { alertMsg }
@@ -212,27 +228,29 @@ const SourceScreen = () => {
         sheetSelectedItem  = { itemId=>deleteSource( +itemId ) }
       />
 
-      <View style={ styles.buttonContainer }>
-        <TouchableOpacity onPress={ ()=>{ 
-                                          setIcon('closecircle')
-                                          setPopupDefaultTxt('') 
-                                          setItemId(0)
-                                          setModalPopup(true) 
-                                        }
-        }>
-          <AntDesign 
-            name={icon}
-            size={60} 
-            color="#fc035e" 
-          />
-        </TouchableOpacity>
-      </View>
-    </View>
-  )
+        <View style={ styles.buttonContainer }>
+          <TouchableOpacity onPress={ ()=>{ 
+                                       setIcon('closecircle')
+                                       setPopupDefaultTxt('') 
+                                       setItemId(0)
+                                       setModalPopup(true) 
+                                     }}>
+            <AntDesign name={icon} size={60} color="#fc035e" />
 
+          </TouchableOpacity>
+        </View>
+
+      </View>
+  )
 };
 
 const styles = StyleSheet.create({
+
+  screenContainer : { 
+    flex:1, 
+    padding : 15, 
+    backgroundColor :'#e6e6e6'  
+  }
 
   itemStyle : {
     fontSize : 20,

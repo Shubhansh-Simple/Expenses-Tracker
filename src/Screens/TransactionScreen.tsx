@@ -4,42 +4,31 @@ import { View,
          FlatList,
          StyleSheet } from 'react-native';
 
-import ButtonSection from '../components/ButtonSection';
+import NoDataFound     from '../components/NoDataFound';
+//import ButtonSection from '../components/ButtonSection';
+import { credit }    from '../database_code/sqlQueries';
+import queryExecutor from '../database_code/starterFunction';
 
 
 const TransactionScreen = () => {
 
   // React STATE
-  const [ data, setData ] = useState([]);
+  const [ creditData, setCreditData ] = useState([]);
 
-  const readingCredit = () => {
+
+  // DATABASE SECTION STARTS
+  const readingCredit = ()  =>  {
     /*
-     * READING TABLE
+     * READING TABLE 
      */
-  
-    let readCreditQuery : string = 'SELECT * FROM Credit;'
-  
-    global.db.transaction( tx =>{
-        tx.executeSql(
-          readCreditQuery,
-          null,
-          (_,{ rows:{ _array }})=>
-            {
-              if( _array.length === 0){
-                console.log('Checking data -',_array)
-                // Calling Function
-                console.log('No data found.')
-              }
-              else{
-                console.log('Data we read from credit - ',_array)
-                setData(_array)
-              }
-            },
-          (_,err)=>{console.log('Failed to read pocket.',err)},
-        )
-    })
+    queryExecutor( credit.readCreditQuery,
+                   null,
+                   'Credit-R',
+                   databaseData => {setCreditData(databaseData)
+                     console.log('The data - ',creditData)
+                    }
+                 )
   }
-
 
 
   useEffect( ()=>{
@@ -52,31 +41,44 @@ const TransactionScreen = () => {
     readingCredit()
   },[])
 
-
-
   return (
-    <View style={ styles.homeStyle }>
+    <View style={{ flex : 1}}>
 
-      <Text style={{ fontSize : 20, textAlign : 'center'}}>All records</Text>
-      <FlatList 
-        data={data}
-        keyExtractor={ item=>item.id.toString() }
-        renderItem={(element)=>{
-          return (
-            <View style={ styles.itemContainer }>
-              <Text style={ styles.itemStyle }>
-                Amount - {element.item.credit_amount}
-              </Text>
-              <Text style={ styles.itemStyle }>
-                Description - {element.item.credit_description}
-              </Text>
-              <Text style={ styles.itemStyle }>
-                Type - {element.item.credit_type}
-              </Text>
-            </View>
-          )
-        }}
-      />
+      {/* CONDITIONAL CODE */}
+      { creditData.length === 0 
+          ?
+        <NoDataFound 
+          dataTitle='No Transaction Found !'
+          dataDescription='Kindly add some data first'
+          emojiName='emoji-sad' 
+          emojiSize={84}
+        />
+          :
+        <View style={ styles.homeStyle }>
+          <Text style={{ fontSize : 20, textAlign : 'center'}}>
+            All records
+          </Text>
+          <FlatList 
+            data={creditData}
+            keyExtractor={ item=>item.id.toString() }
+            renderItem={(element)=>{
+              return (
+                <View style={ styles.itemContainer }>
+                  <Text style={ styles.itemStyle }>
+                    Amount - {element.item.credit_amount}
+                  </Text>
+                  <Text style={ styles.itemStyle }>
+                    Description - {element.item.credit_description}
+                  </Text>
+                  <Text style={ styles.itemStyle }>
+                    Type - {element.item.credit_type}
+                  </Text>
+                </View>
+              )
+            }}
+          />
+        </View>
+      }
     </View>
   )  
 };

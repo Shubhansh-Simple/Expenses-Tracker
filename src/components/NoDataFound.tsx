@@ -7,11 +7,11 @@ import { Entypo } from '@expo/vector-icons';
 
 import reuseStyle      from '../Styles/reuseStyle';
 
-const NoDataFound = ({dataTitle, dataDescription })  =>  {
+const NoDataFound = ({dataTitle, dataDescription, emojiName, emojiSize })  =>  {
 
   return (
     <View style={ reuseStyle.keepItCenter }>
-      <Entypo name="emoji-sad" size={84} color="black" />
+      <Entypo name={emojiName} size={emojiSize} color="black" />
 
       <Text style={ styles.titleStyle }>
         { dataTitle }
