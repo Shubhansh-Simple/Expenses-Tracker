@@ -1,17 +1,24 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View,
+         TouchableOpacity,
+         Text,
+         StyleSheet } from 'react-native';
 
-const ButtonComponent = ( {btnColor, btnText, callModal } ) => {
+import { Entypo } from '@expo/vector-icons'; 
+
+const ButtonComponent = ( {btnColor, iconName, btnText, callModal } ) => {
   return (
     <TouchableOpacity 
       style={{ flexDirection : 'row'}}
       onPress={()=>{ callModal(true) }}
     >
-
-      <View style={ [styles.signBgStyle,{backgroundColor : btnColor}] } >
-        <Text style={ styles.signStyle}>
-          {btnText}
-        </Text>
+      <View style={ [styles.signBgStyle,{borderColor : btnColor}] } >
+        <Entypo 
+          name={iconName}
+          size={50}
+          color={btnColor}
+        />
+        <Text style={ styles.signStyle }>{btnText}</Text>
       </View>
     </TouchableOpacity>
 
@@ -21,17 +28,17 @@ const ButtonComponent = ( {btnColor, btnText, callModal } ) => {
 const styles = StyleSheet.create({
 
   signBgStyle : {
-    paddingHorizontal : 35,
-    paddingVertical : 5,
-    borderRadius : 10,
+    borderWidth : 3,
+    padding : 30,
+    borderRadius : 100,
+    alignItems : 'center',
+    justifyContent : 'center',
     marginHorizontal : 10,
+    backgroundColor : '#393b39',
   },
 
   signStyle : {
-    fontSize : 50,
-    textAlignVertical : 'center',
-    fontWeight : 'bold',
-    alignSelf : 'center',
+    fontSize : 14,
     color : 'white',
   },
 
