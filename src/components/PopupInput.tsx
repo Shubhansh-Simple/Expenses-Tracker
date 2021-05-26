@@ -10,6 +10,7 @@ import { View,
 
 import reuseStyle      from '../Styles/reuseStyle';
 
+import StraightLine    from './StraightLine';
 import BlackScreen     from './BlackScreen';
 import PopupButton     from './PopupButton';
 
@@ -76,6 +77,8 @@ const PopupInput = ({ popupTitle,
               style={ styles.modalNameInput } 
             />
 
+            
+            {/*CONDITIONAL CODE*/} 
             {
               nameInput.length > 20
                 ?
@@ -86,14 +89,12 @@ const PopupInput = ({ popupTitle,
               null
             }
       
-            {/* STRAIGHT LINE */}
-            <View style={{ 
-              borderBottomColor : '#CACACA',
-              borderBottomWidth : 2,
-              alignSelf         : 'stretch',
-              marginTop         : 5,
-              }}>
-            </View>
+            {/* ST. LINE*/}
+            <StraightLine 
+              color='#CACACA'
+              width={2}
+            />
+
 
             <View style={{ 
               flexDirection : 'row', 
