@@ -9,10 +9,13 @@ export const credit = {
                         '"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
                         '"credit_amount" smallint unsigned NOT NULL CHECK ("credit_amount" >= 0), '+
                         '"credit_description" varchar(40) NOT NULL, '+
-                        '"credit_type" varchar(6) NOT NULL );',
+                        '"credit_type" varchar(6) NOT NULL, '+
+                        '"is_credit" bool NOT NULL );',
 
-    insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type ) '+
-                        'VALUES(?,?,?);',
+    insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit ) '+
+                        'VALUES(?,?,?,?);',
+
+    readCreditQuery   : 'SELECT * FROM CREDIT;',
 }
 
 export const source = {

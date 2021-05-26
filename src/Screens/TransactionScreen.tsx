@@ -15,21 +15,17 @@ const TransactionScreen = () => {
   // React STATE
   const [ creditData, setCreditData ] = useState([]);
 
-
-  // DATABASE SECTION STARTS
-  const readingCredit = ()  =>  {
+  const colorDecider = (credit)=>{
     /*
-     * READING TABLE 
+     * DEBIT HAVE
+     * RED COLOR BORDER
      */
-    queryExecutor( credit.readCreditQuery,
-                   null,
-                   'Credit-R',
-                   databaseData => {setCreditData(databaseData)
-                     console.log('The data - ',creditData)
-                    }
-                 )
+    if (!credit){
+      return {
+        borderColor : 'red'
+      }
+    }
   }
-
 
   useEffect( ()=>{
   /*
@@ -37,6 +33,21 @@ const TransactionScreen = () => {
    * AFTER LOADING
    * THIS SCREEN
    */
+
+    // DATABASE SECTION STARTS
+    const readingCredit = ()  =>  {
+      /*
+       * READING TABLE 
+       */
+      queryExecutor( credit.readCreditQuery,
+                     null,
+                     'Credit-R',
+                     databaseData => {setCreditData(databaseData)
+                       console.log('The data - ',creditData)
+                      }
+                   )
+    }
+
     console.log('Inside useEffect of transaction.')
     readingCredit()
   },[])
@@ -63,7 +74,9 @@ const TransactionScreen = () => {
             keyExtractor={ item=>item.id.toString() }
             renderItem={(element)=>{
               return (
-                <View style={ styles.itemContainer }>
+                <View style={[ styles.itemContainer, 
+                               colorDecider(element.item.is_credit) ]}>
+
                   <Text style={ styles.itemStyle }>
                     Amount - {element.item.credit_amount}
                   </Text>
@@ -73,6 +86,7 @@ const TransactionScreen = () => {
                   <Text style={ styles.itemStyle }>
                     Type - {element.item.credit_type}
                   </Text>
+           
                 </View>
               )
             }}
@@ -97,7 +111,8 @@ const styles = StyleSheet.create({
     padding : 10,
     marginVertical : 10,
     marginHorizontal : 20,
-    borderWidth : 1,
+    borderWidth : 3,
+    borderColor : '#15cf43',
     borderRadius : 8,
     shadowColor : 'black',
     shadowOffset : { width:2, height:2 },

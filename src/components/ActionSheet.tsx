@@ -4,6 +4,7 @@
  * FROM SCRATCH
  */
 import React from 'react';
+
 import { View, 
          TouchableOpacity, 
          TouchableWithoutFeedback,
@@ -12,7 +13,9 @@ import { View,
          Text,
          Modal } from 'react-native';
 
+import StraightLine from './StraightLine';
 import BlackScreen from './BlackScreen';
+
 
 const ActionSheet = ({ sheetTitle,
                        sheetDescription,
@@ -64,7 +67,7 @@ const ActionSheet = ({ sheetTitle,
 
               <FlatList
                 data={ sheetData }
-                keyExtractor={ item=>item.title }
+                keyExtractor={ item=>item.id.toString()}
                 renderItem={ (element)=>{
                   return (
                     <TouchableOpacity onPress={ ()=>{
@@ -75,15 +78,14 @@ const ActionSheet = ({ sheetTitle,
                         styles.flatListItem, 
                         { color: listItemColor } 
                       ]}>
-                        { element.item.title }
+                        { element.item.source_name}
                       </Text>
 
                       {/* ST. LINE*/}
-                      <View style={{ 
-                        borderBottomColor:'#f0ede6',
-                        borderBottomWidth:2,
-                        }}>
-                      </View>
+                      <StraightLine 
+                        color='#f0ede6'
+                        width={2}
+                      />
 
                     </TouchableOpacity>
                   )

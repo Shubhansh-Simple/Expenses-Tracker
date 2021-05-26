@@ -33,7 +33,6 @@ const queryExecutor = ( sqlQuery:string,
         (_,err) => { console.log('Failure in ',table_name,' table - ',err) }
       )
     })
-
 };
 
 /*
@@ -80,7 +79,7 @@ function readingPocketHelper( data ){
   console.log('Data through magic - ',data)
   
   if( data.length === 0){
-    console.log('Checking data -',data)
+    console.log('FIRST TIME Checking data -',data)
     insertPocket() // FOR VERY FIRST TIME APP OPEN
   }
   else{
