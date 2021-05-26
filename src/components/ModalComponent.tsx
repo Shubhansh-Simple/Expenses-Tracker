@@ -3,6 +3,7 @@
  * COMPONENT
  */
 import React, {useState} from 'react';
+
 import { View, 
          TouchableOpacity, 
          StyleSheet, 
@@ -12,28 +13,32 @@ import { View,
 
 import { Entypo } from '@expo/vector-icons';
 
+// LOCAL
 import ActionSheet from './ActionSheet';
 
 
-const ModalComponent = ({ modalVisible, 
-                          modalTitle, 
-                          setModalVisible, 
+const ModalComponent = ({ modalTitle, 
                           submitBtnColor,
                           submitBtnText,
+                          sourceOptions,
+                          modalVisible, 
+                          setModalVisible, 
                           submitData }) => {
   
   // REACT's STATE 
   const [ inputAmount, setInputAmount ]          = useState('');
   const [ inputDescription, setInputDescription] = useState('');
 
-  const [ inputCashType, setCashType] = useState('Select payment type')                          
-  const [ pickerOne, setPickerOne ] = useState(false);
+  const [ inputCashType, setCashType]     = useState('Select payment type') 
+  //const [ inputSourceType, setSourceType] = useState('Choose source type')
 
-  //const [ errorText, errorTextSet ]       = useState('Default Error Style');
-  
+  const [ pickerOne, setPickerOne ]          = useState(false);
+  const [ pickerTwo, setPickerTwo]           = useState(false);
+
+  //STATIC DATA
   const pickerOneData = [
-    { title : 'Cash'  , id : 'Cash'  },
-    { title : 'Online', id : 'Online' },
+    { source_name : 'Cash'  , id : 'Cash'  },
+    { souce_name  : 'Online', id : 'Online' },
   ]
 
   return (
@@ -71,6 +76,7 @@ const ModalComponent = ({ modalVisible,
           style={ styles.modalAmountInput } 
         />
 
+
         {/* DESCRIPTION INPUT */}
         <TextInput 
           placeholder='Type your description here...'
@@ -82,12 +88,12 @@ const ModalComponent = ({ modalVisible,
 
         {/* CASH TYPE MODAL */}
         <ActionSheet 
-          sheetTitle='Choose any option'
-          sheetDescription='Ensure user what type of cash it is.'
-          listItemColor = '#0095ff'
-          sheetData={pickerOneData}
-          sheetVisible={pickerOne}
-          setSheetVisible={ (bool:boolean)=>setPickerOne(bool) }
+          sheetTitle       ='Choose any option'
+          sheetDescription ='Ensure user what type of cash it is.'
+          listItemColor    ='#0095ff'
+          sheetData        ={pickerOneData}
+          sheetVisible     ={pickerOne}
+          setSheetVisible  ={ (bool:boolean)=>setPickerOne(bool) }
           sheetSelectedItem={item=>setCashType(item)}
         />
 
@@ -107,6 +113,35 @@ const ModalComponent = ({ modalVisible,
         </TouchableOpacity>
 
 
+        {/* SOURCE TYPE MODAL */}
+        <ActionSheet 
+          sheetTitle        ='Choose your option'
+          sheetDescription  ='Like for what you making this trasaction.'
+          listItemColor     ='#0095ff'
+          sheetData         ={sourceOptions}
+          sheetVisible      ={pickerTwo}
+          setSheetVisible   ={ (bool:boolean)=>setPickerTwo(bool) }
+          sheetSelectedItem ={ item=>console.log('Data return - ',item) }
+        />
+
+        {/* SOURCE TYPE INPUT */}
+        <View style={ styles.sourceContainer }>
+          <Text style={ styles.modalTitle }>Source</Text>
+
+          <TouchableOpacity onPress={()=>setPickerTwo(true) }>
+            <View style={ styles.sourceRightContainer }>
+
+                <Text style={ styles.sourceOptionText}>Choose a source</Text>
+                <Entypo 
+                    name='triangle-down' 
+                    size={18} 
+                    color='black'
+                    style={ styles.modalIcon }
+                  />
+            </View>
+          </TouchableOpacity>
+        </View>
+
         
         {/* SUBMIT BUTTON */}
         <TouchableOpacity 
@@ -115,7 +150,9 @@ const ModalComponent = ({ modalVisible,
                         setModalVisible(false)
                   }}
         >
-          <View style={[ styles.modalSubmitBtn, {backgroundColor : submitBtnColor} ]} >
+          <View style={[ styles.modalSubmitBtn, 
+                         {backgroundColor : submitBtnColor} 
+                      ]}>
             <Text style={ styles.modalSubmitBtnText} >{submitBtnText}</Text>
           </View>
         </TouchableOpacity>
@@ -145,11 +182,6 @@ const styles = StyleSheet.create({
     textAlignVertical : 'bottom' ,
   },
 
-  modalText : {
-    fontSize : 30,
-    textAlign : 'center',
-    color : 'white',
-  },
 
   modalAmountInput : {
     fontSize : 40,
@@ -164,12 +196,32 @@ const styles = StyleSheet.create({
 
   modalTextDescription : {
     fontSize : 20,
-    paddingTop : 30,
+    paddingTop : 20,
     padding : 5,
     borderBottomWidth : 1,
     borderEndColor : 'black',
     marginHorizontal : 30,
     color : '#4e544d',
+  },
+
+  // SOURCE STYLING
+
+  sourceContainer : {
+    flexDirection : 'row',
+    justifyContent : 'space-around',
+    paddingTop : 30,
+  },
+
+  sourceRightContainer : {
+    flexDirection : 'row',
+    marginTop : 9,
+  },
+
+  sourceOptionText : {
+    fontSize : 15,
+    textAlignVertical : 'center',
+    fontWeight : 'bold',
+    color : 'black',
   },
 
   // SUBMIT BUTTON

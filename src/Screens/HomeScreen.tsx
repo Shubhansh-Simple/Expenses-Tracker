@@ -2,28 +2,38 @@ import React, {useState,useEffect} from 'react';
 
 import { View, 
          Text,
-         Button,
          StyleSheet } from 'react-native';
 
+import  {FontAwesome5 } from '@expo/vector-icons'; 
+
 // LOCAL
-import ButtonComponent  from '../components/ButtonComponent';
-import ModalComponent from '../components/ModalComponent';
+import ButtonComponent from '../components/ButtonComponent';
+import ModalComponent  from '../components/ModalComponent';
+//import StraightLine    from '../components/StraightLine';
 
-import { pocket,credit } from '../database_code/sqlQueries';
-import queryExecutor     from '../database_code/starterFunction';
+// DATABASE
+import { pocket, credit, source } from '../database_code/sqlQueries';
+import queryExecutor              from '../database_code/starterFunction';
 
 
-const HomeScreen = ({navigation})  =>  {
+const HomeScreen = ()  =>  {
 
-  // REACT STATE 
-  const [ currentBal, setCurrentBal ]     = useState(0);
+  /*****************
+   * REACT'S STATE *
+   *****************/
+
+  const [ currentBal, setCurrentBal ]     =  useState(0);
+  const [ sourceOptions, setSourceOptions ] = useState([])
 
   // MODAL's STATE
   const [ modalCreditVisible, setModalCreditVisible ] = useState(false);
   const [ modalDebitVisible,  setModalDebitVisible  ] = useState(false);
 
 
-  // DATABASE SECTION STARTS
+  /*********************
+   * DATABASE FUNCTION *
+   *********************/
+ 
   const readingPocket = ()  =>  {
     /*
      * READING Pocket
@@ -38,31 +48,51 @@ const HomeScreen = ({navigation})  =>  {
 
   const insertCredit = ( credit_amount : number,  
                          credit_description : string,
-                         credit_type : string )  =>  {
+                         credit_type : string,
+                         is_credit : boolean  )=>{
     /*
      * INSERTING INTO
      * CREDIT TABLE
      */
     queryExecutor( credit.insertCreditQuery,
-                   [credit_amount,credit_description,credit_type],
+                   [credit_amount, credit_description, credit_type, is_credit],
                    'Credit-I',
-                   databaseData => incrementPocket( credit_amount )
+                   databaseData => insertPocket( credit_amount,is_credit )
                  )
   }
 
 
-  const incrementPocket = ( valueAdd : number )  =>  {
+  const insertPocket = ( value:number, is_credit:boolean )  =>  {
     /*
-     * ADDING balance to 
+     * CREDIT/DEBIT 
+     * balance to 
      * current balance
      */
+    var currentAmount =  is_credit ? currentBal+value : currentBal-value
+
     queryExecutor( pocket.updatePocketQuery,
-                   [currentBal + valueAdd],
+                   [ currentAmount ],
                    'Pocket-U',
                    databaseData => { 
-                         setCurrentBal( currentBal + valueAdd )
+                         setCurrentBal( currentAmount )
                          console.log('Updated data successfully.'),
                          setModalCreditVisible(false)
+                   }
+                 )
+  }
+
+  const readingSource = () => {
+    /*
+  	 * READING FROM
+  	 * SOURCE TABLE
+  	 */
+
+    queryExecutor( source.readSourceQuery,
+                   null,
+                   'Source-R',
+                   databaseData=>{
+                     setSourceOptions(databaseData)
+                     console.log('Data from source table - ',databaseData)
                    }
                  )
   }
@@ -77,29 +107,75 @@ const HomeScreen = ({navigation})  =>  {
    */
     console.log('Inside useEffect of home.')
     readingPocket()
-  },[])
+    readingSource()
+  }, [modalCreditVisible,modalDebitVisible])
 
 
   return (
     <View style={styles.homeStyle} >
 
-      <ModalComponent
-        submitBtnText='Credit'
-        modalTitle='Add Credit'
-        submitBtnColor='#34b518'
-        modalVisible={modalCreditVisible}
-        setModalVisible={ (bool:boolean)  =>  setModalCreditVisible(bool) }
-        submitData={ (data1,data2,data3) => insertCredit(+data1,data2,data3) }
+      <Text style={{ 
+        fontSize:40,
+        color : 'white',
+        fontStyle : 'italic',
+        fontWeight : '400',
+      }}>
+        Laxmi Tracker 
+      </Text>
+      <FontAwesome5 
+        name='comments-dollar' 
+        size={110}
+        color='white'
       />
 
+      {/*CREDIT MODAL*/}
       <ModalComponent
-        submitBtnText='Debit'
-        modalTitle='Add Expense'
-        submitBtnColor='red'
-        modalVisible={modalDebitVisible}
-        setModalVisible={ (bool:boolean)  =>  setModalDebitVisible(bool) }
-        submitData={ (data1,data2,data3) => { console.log('Parent get data - ',data1,data2,data3)} }
+        modalTitle     ='Add Credit'
+        submitBtnText  ='Credit'
+        submitBtnColor ='#34b518'
+        sourceOptions  ={ sourceOptions }
+        modalVisible   ={modalCreditVisible}
+        setModalVisible={ (bool:boolean)=>setModalCreditVisible(bool) }
+        submitData     ={ (data1,data2,data3)=>insertCredit(+data1,data2,data3,true) }
       />
+
+      {/*DEBIT MODAL*/}
+      <ModalComponent
+        modalTitle     ='Add Expense'
+        submitBtnText  ='Debit'
+        submitBtnColor ='red'
+        sourceOptions  ={ sourceOptions }
+        modalVisible   ={modalDebitVisible}
+        setModalVisible={ (bool:boolean)  =>  setModalDebitVisible(bool) }
+        submitData     ={ (data1,data2,data3)=>insertCredit(+data1,data2,data3,false) }
+      />
+
+      <View style={{ flexDirection : 'row', marginHorizontal : 10, }}>
+        <View style={{ 
+          borderBottomWidth : 1, 
+          borderBottomColor : 'white',
+          alignSelf: 'stretch',
+          width : '20%',
+        }}>
+        </View>
+        <Text style={{ 
+          fontSize : 20,
+          color : '#bd1368',
+          marginHorizontal : 20,
+          top : 10,
+          fontStyle : 'italic',
+        }}>
+          Navigator 
+        </Text>
+        <View style={{ 
+          borderBottomWidth : 1, 
+          borderBottomColor : 'white',
+          alignSelf: 'stretch',
+          width : '20%',
+        }}>
+        </View>
+      </View>
+
 
       {/* MAIN BUTTON SECTION STARTS */}
       
@@ -107,30 +183,21 @@ const HomeScreen = ({navigation})  =>  {
 
         <ButtonComponent 
           btnColor='#3ea832' 
-          btnText='+' 
+          btnText='Increment' 
+          iconName='plus' 
           callModal={(bool : boolean ) => setModalCreditVisible(bool)} 
         />
 
         <ButtonComponent 
           btnColor='#ff0022' 
-          btnText='-' 
+          btnText='Decrement' 
+          iconName='minus' 
           callModal={(bool : boolean ) => setModalDebitVisible(bool)} 
         />
 
-        <ButtonComponent 
-          btnColor='black' 
-          btnText='$' 
-          callModal={(bool : boolean ) => navigation.navigate('transaction')} 
-        />
       </View>
 
       {/* MAIN BUTTON SECTION ENDS */}
-
-      <Button title='Navigate' 
-              onPress={ () => { navigation.navigate('reading') }} />
-
-      <Button title='Source' 
-              onPress={ () => { navigation.navigate('source') }} />
 
       <View style={ styles.currentBalParentContainer }>
 
@@ -161,11 +228,11 @@ const styles = StyleSheet.create({
     flex : 1,
     alignItems : 'center',
     justifyContent : 'center',
-    backgroundColor : 'white',
+    backgroundColor : '#272b28',
   },
 
   currentBalParentContainer : { 
-    backgroundColor:'#ede5ce', 
+    backgroundColor:'#393b39', 
     borderRadius : 20,
     marginVertical : 10,
     alignSelf : 'stretch'
@@ -180,6 +247,7 @@ const styles = StyleSheet.create({
   currentBalStyle : {
     padding : 15,
     fontSize : 20,
+    color : 'white',
     textAlignVertical : 'center',
     fontStyle : 'italic',
     textAlign : 'center',
@@ -188,7 +256,8 @@ const styles = StyleSheet.create({
   mainButtonContainer : {
     flexDirection:'row',
     alignItems:'stretch',
-    margin : 30
+    marginHorizontal : 30,
+    marginVertical : 20,
   },
 
 });

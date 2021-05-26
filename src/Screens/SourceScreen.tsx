@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     flex:1, 
     padding : 15, 
     backgroundColor :'#e6e6e6'  
-  }
+  },
 
   itemStyle : {
     fontSize : 20,
