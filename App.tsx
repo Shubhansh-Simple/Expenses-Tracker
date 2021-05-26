@@ -8,7 +8,6 @@ import * as SQLite from 'expo-sqlite';
 
 // LOCAL
 import HomeScreen         from './src/Screens/HomeScreen';
-//import ReadDatabaseScreen from './src/Screens/ReadDatabaseScreen';
 import TransactionScreen  from './src/Screens/TransactionScreen';
 import SourceScreen  from      './src/Screens/SourceScreen';
 import AboutScreen    from './src/Screens/AboutScreen';
