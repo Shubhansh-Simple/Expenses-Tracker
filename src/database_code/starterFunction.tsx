@@ -102,13 +102,29 @@ export function readingPocket(){
  * SOURCE TABLE SECTION
  */
 
+
+function insertSource(){
+  /* INSERT DEFAULT VALUE TO SOURCE
+   * 
+   * IGNORE - we mention 'UNIQUE' source_name in table 
+   *          if it's exist then it's violates database since
+   *          that makes query ignored.
+   */
+
+  queryExecutor( 'INSERT or IGNORE'+ source.insertSourceQuery.slice(6),
+                 ['Others'],  
+                 'Source-I',
+                 (yo1)=>{}
+               )
+}
+
 export function createSource(){
   /* CREATE TABLE IF NOT EXIST */
 
   queryExecutor( source.createSourceQuery, 
                   null, 
                   'Source-C',
-                  (yo1)=>{}
+                  (yo1)=>{ insertSource() }
                 )
 }
 

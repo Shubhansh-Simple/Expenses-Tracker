@@ -22,7 +22,7 @@ export const source = {
     
   createSourceQuery : 'CREATE TABLE IF NOT EXISTS "Source" ( '+
                       '"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
-                      '"source_name" varchar(20) NOT NULL );',
+                      '"source_name" varchar(20) NOT NULL UNIQUE );',
 
   insertSourceQuery : 'INSERT INTO Source( source_name ) VALUES(?);',
 
