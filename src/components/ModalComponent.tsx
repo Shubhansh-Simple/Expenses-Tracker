@@ -30,7 +30,7 @@ const ModalComponent = ({ modalTitle,
   const [ inputDescription, setInputDescription] = useState('');
 
   const [ inputCashType, setCashType]     = useState('Select payment type') 
-  //const [ inputSourceType, setSourceType] = useState('Choose source type')
+  const [ inputSourceType, setSourceType] = useState('Choose source type')
 
   const [ pickerOne, setPickerOne ]          = useState(false);
   const [ pickerTwo, setPickerTwo]           = useState(false);
@@ -121,7 +121,7 @@ const ModalComponent = ({ modalTitle,
           sheetData         ={sourceOptions}
           sheetVisible      ={pickerTwo}
           setSheetVisible   ={ (bool:boolean)=>setPickerTwo(bool) }
-          sheetSelectedItem ={ item=>console.log('Data return - ',item) }
+          sheetSelectedItem ={ item=>setSourceType(item) }
         />
 
         {/* SOURCE TYPE INPUT */}
@@ -131,7 +131,9 @@ const ModalComponent = ({ modalTitle,
           <TouchableOpacity onPress={()=>setPickerTwo(true) }>
             <View style={ styles.sourceRightContainer }>
 
-                <Text style={ styles.sourceOptionText}>Choose a source</Text>
+                <Text style={ styles.sourceOptionText}>
+                  {inputSourceType}
+                </Text>
                 <Entypo 
                     name='triangle-down' 
                     size={18} 
@@ -146,7 +148,8 @@ const ModalComponent = ({ modalTitle,
         {/* SUBMIT BUTTON */}
         <TouchableOpacity 
           onPress={()=>{ 
-                        submitData(inputAmount,inputDescription, inputCashType)
+                        submitData( inputAmount, inputDescription, 
+                                    inputCashType, inputSourceType )
                         setModalVisible(false)
                   }}
         >

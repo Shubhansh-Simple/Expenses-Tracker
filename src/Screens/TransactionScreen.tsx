@@ -86,6 +86,9 @@ const TransactionScreen = () => {
                   <Text style={ styles.itemStyle }>
                     Type - {element.item.credit_type}
                   </Text>
+                  <Text style={ styles.itemStyle }>
+                    Source Name - {element.item.source_name_id}
+                  </Text>
            
                 </View>
               )

@@ -10,10 +10,12 @@ export const credit = {
                         '"credit_amount" smallint unsigned NOT NULL CHECK ("credit_amount" >= 0), '+
                         '"credit_description" varchar(40) NOT NULL, '+
                         '"credit_type" varchar(6) NOT NULL, '+
-                        '"is_credit" bool NOT NULL );',
+                        '"is_credit" bool NOT NULL, '+
+                        '"source_name_id" integer NOT NULL REFERENCES "Source" ("id") DEFERRABLE INITIALLY DEFERRED);',
+ 
 
-    insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit ) '+
-                        'VALUES(?,?,?,?);',
+    insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, source_name_id ) '+
+                        'VALUES(?,?,?,?,?);',
 
     readCreditQuery   : 'SELECT * FROM CREDIT;',
 }
