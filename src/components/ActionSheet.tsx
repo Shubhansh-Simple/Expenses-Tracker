@@ -14,7 +14,7 @@ import { View,
          Modal } from 'react-native';
 
 import StraightLine from './StraightLine';
-import BlackScreen from './BlackScreen';
+import BlackScreen  from './BlackScreen';
 
 
 const ActionSheet = ({ sheetTitle,
@@ -71,7 +71,7 @@ const ActionSheet = ({ sheetTitle,
                 renderItem={ (element)=>{
                   return (
                     <TouchableOpacity onPress={ ()=>{
-                      sheetSelectedItem(element.item.id)
+                      sheetSelectedItem( element.item )
                       setSheetVisible(false)
                     }}>
                       <Text style={[

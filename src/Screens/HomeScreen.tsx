@@ -56,7 +56,12 @@ const HomeScreen = ()  =>  {
      * CREDIT TABLE
      */
     queryExecutor( credit.insertCreditQuery,
-                   [credit_amount, credit_description, credit_type, is_credit, source_name ],
+
+                   [credit_amount, 
+                    credit_description, 
+                    credit_type, 
+                    is_credit, 
+                    source_name ],
                    'Credit-I',
                    databaseData => insertPocket( credit_amount,is_credit )
                  )
@@ -137,18 +142,26 @@ const HomeScreen = ()  =>  {
         sourceOptions  ={ sourceOptions }
         modalVisible   ={modalCreditVisible}
         setModalVisible={ (bool:boolean)=>setModalCreditVisible(bool) }
-        submitData     ={ (data1,data2,data3,data4)=>insertCredit(+data1,data2,data3,true,+data4) }
+        submitData     ={ (data1,data2,data3,data4)=>insertCredit( +data1,
+                                                                    data2,
+                                                                    data3,
+                                                                    true,
+                                                                   +data4 )}
       />
 
       {/*DEBIT MODAL*/}
       <ModalComponent
         modalTitle     ='Add Expense'
-        submitBtnText  ='Debit'
+        submitBtnText  ='Debits'
         submitBtnColor ='red'
         sourceOptions  ={ sourceOptions }
         modalVisible   ={modalDebitVisible}
-        setModalVisible={ (bool:boolean)  =>  setModalDebitVisible(bool) }
-        submitData     ={ (data1,data2,data3,data4)=>insertCredit(+data1,data2,data3,false,+data4) }
+        setModalVisible={ (bool:boolean)=>setModalDebitVisible(bool) }
+        submitData     ={ (data1,data2,data3,data4)=>insertCredit( +data1,
+                                                                    data2, 
+                                                                    data3,
+                                                                    false, 
+                                                                   +data4)}
       />
 
       <View style={{ flexDirection : 'row', marginHorizontal : 10, }}>

@@ -2,6 +2,7 @@
  * Credit-Debit MODAL 
  * COMPONENT
  */
+
 import React, {useState} from 'react';
 
 import { View, 
@@ -24,25 +25,30 @@ const ModalComponent = ({ modalTitle,
                           modalVisible, 
                           setModalVisible, 
                           submitData }) => {
+
+  // CHOICES 
+  const pickerTwoData = {
+    source_name : 'Choose your source',
+    id : 0
+  }
+
+  const pickerOneData = [
+    { source_name    : 'Select payment type', id : 'Default'     },
+    { source_name    : 'Cash Payment'  ,      id : 'cash'  },
+    { source_name    : 'Online Payment',      id : 'online'},
+  ] 
   
   // REACT's STATE 
   const [ inputAmount, setInputAmount ]          = useState('');
   const [ inputDescription, setInputDescription] = useState('');
 
-  const [ inputCashType, setCashType]     = useState('Select payment type') 
-  const [ inputSourceType, setSourceType] = useState('Choose source type')
+  const [ inputCashType, setCashType]     = useState(pickerOneData[0]) 
+  const [ inputSourceType, setSourceType] = useState( pickerTwoData )
 
-  const [ pickerOne, setPickerOne ]          = useState(false);
-  const [ pickerTwo, setPickerTwo]           = useState(false);
-
-  //STATIC DATA
-  const pickerOneData = [
-    { source_name : 'Cash'  , id : 'Cash'  },
-    { souce_name  : 'Online', id : 'Online' },
-  ]
+  const [ pickerOne, setPickerOne ]       = useState(false);
+  const [ pickerTwo, setPickerTwo ]       = useState(false);
 
   return (
-
     // MODAL CODE START
 
     <Modal
@@ -53,9 +59,9 @@ const ModalComponent = ({ modalTitle,
     >
       <View style={ styles.modalView } >
         
-        <View style={{ flexDirection : 'row',justifyContent : 'space-between'}}>
+        <View style={{ flexDirection : 'row',justifyContent : 'space-around'}}>
 
-          <Text style={ styles.modalTitle }>{modalTitle}</Text>
+          <Text style={[styles.modalTitle,{fontSize:30} ]}>{modalTitle}</Text>
 
           <Entypo
             name='cross'
@@ -77,21 +83,12 @@ const ModalComponent = ({ modalTitle,
         />
 
 
-        {/* DESCRIPTION INPUT */}
-        <TextInput 
-          placeholder='Type your description here...'
-          value={inputDescription}
-          onChangeText={inputValue=>{setInputDescription(inputValue)}}
-          autoCorrect={false}
-          style={ styles.modalTextDescription } 
-        />
-
         {/* CASH TYPE MODAL */}
         <ActionSheet 
           sheetTitle       ='Choose any option'
           sheetDescription ='Ensure user what type of cash it is.'
           listItemColor    ='#0095ff'
-          sheetData        ={pickerOneData}
+          sheetData        ={ pickerOneData.slice(1,) }
           sheetVisible     ={pickerOne}
           setSheetVisible  ={ (bool:boolean)=>setPickerOne(bool) }
           sheetSelectedItem={item=>setCashType(item)}
@@ -99,9 +96,9 @@ const ModalComponent = ({ modalTitle,
 
         {/* CASH TYPE INPUT */}
         <TouchableOpacity onPress={ ()=>setPickerOne(true) }>
-          <View style={ styles.pickerOneContainer } >
+          <View style={ styles.pickersContainer } >
             <Text style={ styles.modalTitle }>
-              {inputCashType}
+              { inputCashType.source_name }
             </Text>
             <Entypo 
               name='triangle-down' 
@@ -125,14 +122,14 @@ const ModalComponent = ({ modalTitle,
         />
 
         {/* SOURCE TYPE INPUT */}
-        <View style={ styles.sourceContainer }>
+        <View style={ styles.pickersContainer}>
           <Text style={ styles.modalTitle }>Source</Text>
 
           <TouchableOpacity onPress={()=>setPickerTwo(true) }>
             <View style={ styles.sourceRightContainer }>
 
                 <Text style={ styles.sourceOptionText}>
-                  {inputSourceType}
+                  {inputSourceType.source_name}
                 </Text>
                 <Entypo 
                     name='triangle-down' 
@@ -144,12 +141,24 @@ const ModalComponent = ({ modalTitle,
           </TouchableOpacity>
         </View>
 
+
+        {/* DESCRIPTION INPUT */}
+        <TextInput 
+          placeholder='Type your reason here...'
+          value={inputDescription}
+          onChangeText={inputValue=>{setInputDescription(inputValue)}}
+          autoCorrect={false}
+          style={ styles.modalTextDescription } 
+        />
+
         
         {/* SUBMIT BUTTON */}
         <TouchableOpacity 
           onPress={()=>{ 
-                        submitData( inputAmount, inputDescription, 
-                                    inputCashType, inputSourceType )
+                        submitData( inputAmount, 
+                                    inputDescription, 
+                                    inputCashType.id, 
+                                    inputSourceType.id )
                         setModalVisible(false)
                   }}
         >
@@ -161,6 +170,7 @@ const ModalComponent = ({ modalTitle,
         </TouchableOpacity>
 
       </View>
+
     </Modal>
   )
 };
@@ -168,8 +178,12 @@ const ModalComponent = ({ modalTitle,
 const styles = StyleSheet.create({
   
   modalView : {
-    backgroundColor:'#ebe6df',
+    //backgroundColor:'#ebe6df',
+    backgroundColor:'#ffe6b5',
     flex : 1,
+    borderRadius : 40,
+    marginTop   : 40,
+    marginBottom: 80,
     padding : 10,
   },
 
@@ -185,7 +199,6 @@ const styles = StyleSheet.create({
     textAlignVertical : 'bottom' ,
   },
 
-
   modalAmountInput : {
     fontSize : 40,
     //fontWeight : 'bold',
@@ -199,7 +212,7 @@ const styles = StyleSheet.create({
 
   modalTextDescription : {
     fontSize : 20,
-    paddingTop : 20,
+    paddingTop : 30,
     padding : 5,
     borderBottomWidth : 1,
     borderEndColor : 'black',
@@ -207,35 +220,34 @@ const styles = StyleSheet.create({
     color : '#4e544d',
   },
 
-  // SOURCE STYLING
-
-  sourceContainer : {
-    flexDirection : 'row',
+  // CASH TYPE STYLING
+  pickersContainer : {
+    flexDirection: 'row', 
     justifyContent : 'space-around',
     paddingTop : 30,
   },
 
   sourceRightContainer : {
     flexDirection : 'row',
-    marginTop : 9,
+    top : 5,
   },
 
   sourceOptionText : {
-    fontSize : 15,
-    textAlignVertical : 'center',
+    fontSize   : 18,
     fontWeight : 'bold',
-    color : 'black',
+    color      : 'black',
   },
 
   // SUBMIT BUTTON
   modalSubmitBtn : {
     borderRadius : 15,
-    paddingHorizontal : 20,
     alignSelf : 'center',
     margin : 40,
+    top : 80,
     shadowColor : 'black',
     shadowOffset : { width:2, height:2 },
     shadowOpacity : 1.9,
+    paddingHorizontal : 30,
   },
 
   modalSubmitBtnText : {
@@ -244,12 +256,6 @@ const styles = StyleSheet.create({
     fontWeight : 'bold',
     padding : 10,
     paddingHorizontal : 20,
-  },
-
-  pickerOneContainer : {
-    flexDirection: 'row', 
-    alignSelf :'center',
-    paddingTop : 20,
   },
 
 });
