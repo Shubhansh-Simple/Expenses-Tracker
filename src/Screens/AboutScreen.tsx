@@ -8,8 +8,6 @@ import { View,
 const AboutScreen = () => {
   return (
     <View style={ styles.aboutContainer }>
-      <Text style={ styles.headingStyle }>Welcome User</Text>
-      
       <Image 
         style={{ width:200, 
                  height : 200, 
@@ -24,9 +22,10 @@ const AboutScreen = () => {
       </Text>
 
       <Text style={ styles.textParagraph }>
-        This application is written in "React Native" language and 
-        using the "Sqlite" database for storing the data in your mobile.
-        It's just a personal mobile application for practice or nothing else.
+        This application is written in "React Native" &
+        using "Sqlite" database for storing the data in your mobile.
+        {'\n'} {'\n'}
+        It's just a personal mobile app for practicing concept or nothing else.
       </Text>
 
     </View>
@@ -41,7 +40,8 @@ const styles = StyleSheet.create({
 
   aboutContainer : {
     flex : 1,
-    justifyContent : 'center',
+    justifyContent : 'flex-start',
+    marginTop : 40,
     alignItems : 'center',
     padding : 30,
   },
@@ -55,11 +55,9 @@ const styles = StyleSheet.create({
   textParagraph : {
     padding : 20,
     fontStyle : 'italic',
-    color : 'white',
-    backgroundColor : 'black',
-    borderRadius : 50,
-    paddingVertical : 14,
-    paddingHorizontal : 20,
+    alignSelf : 'stretch',
+    color : 'black',
+    fontSize : 17,
     marginVertical : 18,
   }
 });

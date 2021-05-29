@@ -169,19 +169,20 @@ const SourceScreen = () => {
                 </View>
 
                 <View style={ styles.iconContainer }>
-                 
                   <TouchableOpacity onPress={()=>
                     { setActionDelData(
                         [{ 
-                            title :'Delete '+ element.item.source_name,
-                            id : element.item.id 
+                            source_name :'Delete '+ element.item.source_name,
+                            id          : element.item.id 
                         }]
-                      ) 
+                      )
                       setActionDel( true )
                     }
                   }>
-
-                    <MaterialCommunityIcons name='delete' size={24} color='white' />
+                    <MaterialCommunityIcons 
+                      name='delete' 
+                      size={24} 
+                      color='red' />
                   </TouchableOpacity>
                 </View>
 
@@ -220,7 +221,7 @@ const SourceScreen = () => {
       {/* CHOICE COMPONENT */}
       <ActionSheet 
         sheetTitle         = 'Are You Sure ?'
-        sheetDescription   = ''
+        sheetDescription   = 'You cant undo this action'
         listItemColor      = 'red'
         sheetData          = { actionDelData }
         sheetVisible       = { actionDel }
@@ -268,14 +269,14 @@ const styles = StyleSheet.create({
     flexDirection : 'row',
     justifyContent : 'space-around',
     shadowColor : 'black',
-    shadowOffset : { width:2, height:2 },
-    shadowOpacity : 0.9
-
+    shadowOffset : { width:0, height:9 },
+    shadowOpacity : 0.9,
+    elevation : 9,
+    shadowRadius : 2,
   },
 
   iconContainer : {
     flex : 1, 
-    backgroundColor : 'red',
     padding : 5,
     borderRadius : 10,
   },
