@@ -33,7 +33,7 @@ const ModalComponent = ({ modalTitle,
   }
 
   const pickerOneData = [
-    { source_name    : 'Select payment type', id : 'Default'     },
+    { source_name    : 'Select payment type', id : 'Default' },
     { source_name    : 'Cash Payment'  ,      id : 'cash'  },
     { source_name    : 'Online Payment',      id : 'online'},
   ] 

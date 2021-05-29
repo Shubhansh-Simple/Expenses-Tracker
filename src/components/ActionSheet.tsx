@@ -62,37 +62,40 @@ const ActionSheet = ({ sheetTitle,
               }
             </View>
 
-            {/* BODY */}
-            <View style={ styles.modalBody }>
+              { sheetData
+                  ? 
+                <View style={ styles.modalBody }>
+                  <FlatList
+                    data={ sheetData }
+                    keyExtractor={ item=>item.id.toString()}
+                    renderItem={ (element)=>{
+                      return (
+                        <TouchableOpacity onPress={ ()=>{
+                          sheetSelectedItem( element.item )
+                          setSheetVisible(false)
+                        }}>
+                          <Text style={[
+                            styles.flatListItem, 
+                            { color: listItemColor } 
+                          ]}>
+                            { element.item.source_name}
+                          </Text>
 
-              <FlatList
-                data={ sheetData }
-                keyExtractor={ item=>item.id.toString()}
-                renderItem={ (element)=>{
-                  return (
-                    <TouchableOpacity onPress={ ()=>{
-                      sheetSelectedItem( element.item )
-                      setSheetVisible(false)
-                    }}>
-                      <Text style={[
-                        styles.flatListItem, 
-                        { color: listItemColor } 
-                      ]}>
-                        { element.item.source_name}
-                      </Text>
+                          {/* ST. LINE*/}
+                          <StraightLine 
+                            color='#f0ede6'
+                            width={2}
+                          />
 
-                      {/* ST. LINE*/}
-                      <StraightLine 
-                        color='#f0ede6'
-                        width={2}
-                      />
+                        </TouchableOpacity>
+                      )
+                    }}
+                  />
+                </View>
+                  :
+                null
+              }
 
-                    </TouchableOpacity>
-                  )
-                }}
-              />
-
-            </View>
 
           </View>
 
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
 
   modalHeader : {
     alignItems : 'center',
-    padding : 10,
+    padding : 5,
   },
 
   modalTitle : {
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
 
   modalBody: {
     alignItems : 'stretch',
-    paddingBottom : 30,
+    padding : 4,
   },
 
   flatListItem : {
