@@ -20,5 +20,13 @@ export default StyleSheet.create({
     color      : 'red',
   },
 
+  bgShadow : {
+    shadowColor : 'black',
+    shadowOffset : { width:0, height:9 },
+    shadowOpacity : 0.9,
+    elevation : 20,
+    shadowRadius : 2,
+  },
+
 });
 
