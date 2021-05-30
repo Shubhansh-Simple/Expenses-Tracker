@@ -15,7 +15,7 @@ const ButtonComponent = ( {btnColor, iconName, btnText, callModal } ) => {
       <View style={ [styles.signBgStyle,{borderColor : btnColor}] } >
         <Entypo 
           name={iconName}
-          size={50}
+          size={45}
           color={btnColor}
         />
         <Text style={ styles.signStyle }>{btnText}</Text>

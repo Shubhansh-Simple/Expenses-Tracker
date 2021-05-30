@@ -84,11 +84,15 @@ const SourceScreen = () => {
   	 * SOURCE TABLE
   	 */
 
-    queryExecutor( source.updateSourceQuery,
-                   [ source_name,itemId ],
-                   'Source-U',
-                   databaseData=>autoHideMsg('Successfully Updated',2000)
-                 )
+    if ( itemId > 1 ){
+      // Others id is 1
+      //
+      queryExecutor( source.updateSourceQuery,
+                     [ source_name,itemId ],
+                     'Source-U',
+                     databaseData=>autoHideMsg('Successfully Updated',2000)
+                   )
+    }
   }
 
 
@@ -98,11 +102,15 @@ const SourceScreen = () => {
   	 * SOURCE TABLE
   	 */
 
-    queryExecutor( source.deleteSourceQuery,
-                   [ itemId ],
-                   'Source-D',
-                   databaseData=>autoHideMsg('Successfully Deleted',2000) 
-                 )
+    if ( itemId > 1 ){
+      // Others id is 1
+      //
+      queryExecutor( source.deleteSourceQuery,
+                     [ itemId ],
+                     'Source-D',
+                     databaseData=>autoHideMsg('Successfully Deleted',2000) 
+                   )
+    }
   }
 
 
@@ -135,7 +143,7 @@ const SourceScreen = () => {
     <View style={{flex : 1}}>
 
       {/* CONDITIONAL CODE */}
-      { dataSource.length === 0 
+      { dataSource.length === 1 
           ?
       <NoDataFound 
           dataTitle='No Sources Found !'
@@ -147,7 +155,7 @@ const SourceScreen = () => {
       <View style={ styles.screenContainer }>
 
         <FlatList 
-          data={dataSource}
+          data={ dataSource.slice(0,dataSource.length-1) }
           keyExtractor={ item=>item.id.toString() }
           renderItem={(element)=>{
 
@@ -226,7 +234,7 @@ const SourceScreen = () => {
         sheetData          = { actionDelData }
         sheetVisible       = { actionDel }
         setSheetVisible    = { (bool:boolean)=>setActionDel(bool) }
-        sheetSelectedItem  = { itemId=>deleteSource( +itemId ) }
+        sheetSelectedItem  = { itemId=>deleteSource( itemId.id ) }
       />
 
         <View style={ styles.buttonContainer }>
