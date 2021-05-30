@@ -17,7 +17,7 @@ export const credit = {
     insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, source_name_id ) '+
                         'VALUES(?,?,?,?,?);',
 
-    readCreditQuery   : 'SELECT * FROM CREDIT;',
+    readCreditQuery   : 'SELECT * FROM CREDIT ORDER BY id DESC;',
 }
 
 export const source = {
@@ -30,7 +30,7 @@ export const source = {
 
   updateSourceQuery : 'UPDATE Source SET source_name=? WHERE id=?',
 
-  readSourceQuery   : 'SELECT * FROM SOURCE;',
+  readSourceQuery   : 'SELECT * FROM SOURCE ORDER BY id DESC;',
 
   deleteSourceQuery : 'DELETE FROM SOURCE WHERE id=?;',
 

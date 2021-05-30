@@ -210,9 +210,9 @@ const HomeScreen = ()  =>  {
         />
 
       </View>
-
       {/* MAIN BUTTON SECTION ENDS */}
 
+      {/* CURRENT BALANCE */}
       <View style={ styles.currentBalParentContainer }>
 
         <View style={ styles.currentBalContainer }>
