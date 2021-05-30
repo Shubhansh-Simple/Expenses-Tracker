@@ -22,7 +22,11 @@ const HomeScreen = ()  =>  {
    * REACT'S STATE *
    *****************/
 
-  const [ currentBal, setCurrentBal ]     =  useState(0);
+  const [ currentBal, setCurrentBal ]       =  useState(0);
+  const [ currentCash, setCurrentCash ]     =  useState(0);
+  const [ currentOnline, setCurrentOnline ] =  useState(0);
+
+
   const [ sourceOptions, setSourceOptions ] = useState([])
 
   // MODAL's STATE
@@ -42,7 +46,13 @@ const HomeScreen = ()  =>  {
     queryExecutor( pocket.readPocketQuery+' WHERE id=1',
                    null,
                    'Pocket-R',
-                   databaseData => setCurrentBal(databaseData[0].currentBal)
+                   databaseData=>{ 
+                     console.log('Data from pocket database - ',databaseData)
+                     setCurrentBal(databaseData[0].currentBal)
+                     setCurrentCash(databaseData[0].cashBal)
+                     setCurrentOnline(databaseData[0].onlineBal)
+                  
+                   }
                  )
   }
 
@@ -63,26 +73,37 @@ const HomeScreen = ()  =>  {
                     is_credit, 
                     source_name ],
                    'Credit-I',
-                   databaseData => insertPocket( credit_amount,is_credit )
+                   databaseData=>insertPocket( credit_amount,is_credit,credit_type )
                  )
   }
 
-
-  const insertPocket = ( value:number, is_credit:boolean )  =>  {
+  const insertPocket = ( value:number, is_credit:boolean, credit_type:string )  =>  {
     /*
      * CREDIT/DEBIT 
      * balance to 
      * current balance
      */
-    var currentAmount =  is_credit ? currentBal+value : currentBal-value
+
+    if (credit_type==='cash' ){ 
+      var cash1 =  is_credit ? currentBal+value : currentBal-value
+      var cash2 =  is_credit ? currentCash+value : currentCash-value
+      var cash3 =  is_credit ? currentOnline+0 : currentOnline-0
+    }
+   else{
+      var cash1 =  is_credit ? currentBal+value : currentBal-value
+      var cash2 =  is_credit ? currentCash+0 : currentCash-0
+      var cash3 =  is_credit ? currentOnline+value : currentOnline-value
+    }
 
     queryExecutor( pocket.updatePocketQuery,
-                   [ currentAmount ],
-                   'Pocket-U',
-                   databaseData => { 
-                         setCurrentBal( currentAmount )
-                         console.log('Updated data successfully.'),
-                         setModalCreditVisible(false)
+                   [ cash1, cash2, cash3 ],
+                    'Pocket-U',
+                     databaseData=>{ 
+                       setCurrentBal( cash1 )
+                       setCurrentCash( cash2 )
+                       setCurrentOnline(cash3 )
+                       console.log('Updated data successfully.'),
+                       setModalCreditVisible(false)
                    }
                  )
   }
@@ -96,10 +117,7 @@ const HomeScreen = ()  =>  {
     queryExecutor( source.readSourceQuery,
                    null,
                    'Source-R',
-                   databaseData=>{
-                     setSourceOptions(databaseData)
-                     console.log('Data from source table - ',databaseData)
-                   }
+                   databaseData=>setSourceOptions(databaseData) 
                  )
   }
 
@@ -217,12 +235,12 @@ const HomeScreen = ()  =>  {
 
         <View style={ styles.currentBalContainer }>
           <Text style={ styles.currentBalStyle }> Cash </Text>
-          <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
+          <Text style={ styles.currentBalStyle }> {currentCash} Rs </Text>
         </View>
 
         <View style={ styles.currentBalContainer }>
           <Text style={ styles.currentBalStyle }> Online </Text>
-          <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
+          <Text style={ styles.currentBalStyle }> {currentOnline} Rs </Text>
         </View>   
 
         <View style={ styles.currentBalContainer }>

@@ -29,7 +29,6 @@ export default () => {
      * at the starting of app
      */
     createPocket()
-    readingPocket()
     createCredit()
     createSource()
 

@@ -53,47 +53,29 @@ export function createCredit(){
  * POCKET TABLE SECTION
  */
 
+
+function insertPocket(){
+  /* INSERT DEFAULT VALUE TO SOURCE
+   * 
+   * IGNORE - we mention 'UNIQUE' source_name in table 
+   *          if it's exist then it's violates database since
+   *          that makes query ignored.
+   */
+
+  queryExecutor( 'INSERT or IGNORE' + pocket.insertPocketQuery.slice(6), 
+                 [1,0,0,0],  
+                 'Pocket-I',
+                 (yo1)=>{}
+               )
+}
+
 export function createPocket(){
   /* CREATING POCKET TABLE */
 
   queryExecutor( pocket.createPocketQuery,  
                  null,
                  'Pocket-C',
-                 (yo1)=>{}
-               )
-}
-
-function insertPocket(){
-  /* INSERT DEFAULT VALUE TO POCKET */
-
-  queryExecutor( pocket.insertPocketQuery, 
-                 [1,0],  
-                 'Pocket-I',
-                 (yo1)=>{}
-               )
-}
-
-function readingPocketHelper( data ){
-  /* callBack FUNCTION */
-
-  console.log('Data through magic - ',data)
-  
-  if( data.length === 0){
-    console.log('FIRST TIME Checking data -',data)
-    insertPocket() // FOR VERY FIRST TIME APP OPEN
-  }
-  else{
-    console.log('Table is already prepopulated - ',data)
-  }
-}
-
-export function readingPocket(){
-  /* READING POCKET TABLE */
-
-  queryExecutor( pocket.readPocketQuery, 
-                 null, 
-                 'Pocket-R',
-                 readingPocketHelper  // above func.
+                 (yo1)=>{ insertPocket() }
                )
 }
 

@@ -12,7 +12,6 @@ export const credit = {
                         '"credit_type" varchar(6) NOT NULL, '+
                         '"is_credit" bool NOT NULL, '+
                         '"source_name_id" integer NOT NULL REFERENCES "Source" ("id") DEFERRABLE INITIALLY DEFERRED);',
- 
 
     insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, source_name_id ) '+
                         'VALUES(?,?,?,?,?);',
@@ -28,7 +27,7 @@ export const source = {
 
   insertSourceQuery : 'INSERT INTO Source( source_name ) VALUES(?);',
 
-  updateSourceQuery : 'UPDATE Source SET source_name=? WHERE id=?',
+  updateSourceQuery : 'UPDATE Source SET source_name=? WHERE id=?;',
 
   readSourceQuery   : 'SELECT * FROM SOURCE ORDER BY id DESC;',
 
@@ -40,13 +39,15 @@ export const pocket = {
 
   createPocketQuery : 'CREATE TABLE IF NOT EXISTS "Pocket" '+
                       '("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, '+
-                      '"currentBal" smallint unsigned NOT NULL CHECK ("currentBal" >= 0));',
+                      '"currentBal" integer unsigned NOT NULL CHECK ("currentBal" >= 0), '+
+                      '"cashBal" integer unsigned NOT NULL CHECK ("cashBal" >= 0), '+
+                      '"onlineBal" integer unsigned NOT NULL CHECK ("onlineBal" >= 0) );',
 
-  insertPocketQuery : 'INSERT INTO Pocket (id,currentBal) VALUES(?,?);',
+  insertPocketQuery : 'INSERT INTO Pocket ( id, currentBal, cashBal, onlineBal ) VALUES(?,?,?,?);',
 
   readPocketQuery   : 'SELECT * FROM Pocket;',
 
-  updatePocketQuery : 'REPLACE INTO Pocket(id,currentBal) VALUES(1,?)'
+  updatePocketQuery : 'REPLACE INTO Pocket(id,currentBal, cashBal, onlineBal ) VALUES(1,?,?,?);'
 
 }
 
