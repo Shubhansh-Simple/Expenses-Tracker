@@ -65,43 +65,51 @@ const HomeScreen = ()  =>  {
      * INSERTING INTO
      * CREDIT TABLE
      */
+
+    var remain_bal=  is_credit ? currentBal+credit_amount : currentBal-credit_amount 
+
     queryExecutor( credit.insertCreditQuery,
 
                    [credit_amount, 
                     credit_description, 
                     credit_type, 
                     is_credit, 
-                    source_name ],
+                    remain_bal,
+                    source_name
+                    ],
                    'Credit-I',
                    databaseData=>{
-                     insertPocket( credit_amount,is_credit,credit_type )
+                     insertPocket( credit_amount,is_credit,credit_type,remain_bal )
                    }
                  )
   }
 
-  const insertPocket = ( value:number, is_credit:boolean, credit_type:string )  =>  {
+  const insertPocket = ( value:number, 
+                         is_credit:boolean, 
+                         credit_type:string,
+                         remain_bal:number,
+                       )  =>  {
     /*
      * CREDIT/DEBIT 
      * balance to 
      * current balance
      */
 
+
     if (credit_type==='cash' ){ 
-      var cash1 =  is_credit ? currentBal+value : currentBal-value
       var cash2 =  is_credit ? currentCash+value : currentCash-value
       var cash3 =  is_credit ? currentOnline+0 : currentOnline-0
     }
    else{
-      var cash1 =  is_credit ? currentBal+value : currentBal-value
       var cash2 =  is_credit ? currentCash+0 : currentCash-0
       var cash3 =  is_credit ? currentOnline+value : currentOnline-value
     }
 
     queryExecutor( pocket.updatePocketQuery,
-                   [ cash1, cash2, cash3 ],
+                   [ remain_bal, cash2, cash3 ],
                     'Pocket-U',
                      databaseData=>{ 
-                       setCurrentBal( cash1 )
+                       setCurrentBal( remain_bal )
                        setCurrentCash( cash2 )
                        setCurrentOnline(cash3 )
                        console.log('Updated data successfully.'),
@@ -181,7 +189,7 @@ const HomeScreen = ()  =>  {
                                                                     data2, 
                                                                     data3,
                                                                     false, 
-                                                                   +data4)}
+                                                                   +data4 )}
       />
 
       <View style={{ flexDirection : 'row', marginHorizontal : 10, }}>

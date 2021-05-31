@@ -51,6 +51,7 @@ const TransactionScreen = ({navigation}) => {
                            : 
                          null
                        }
+                       console.log('The transaction - ',databaseData)
                      }
                    )
     }
@@ -102,8 +103,9 @@ const TransactionScreen = ({navigation}) => {
               return (
                 <View style={styles.itemContainer}>
 
+                  {/* Decide Icons */}
                   <TransactionIcon 
-                    is_credit ={element.item.is_credit}
+                    is_credit = {element.item.is_credit}
                   />
                   <View style={{ 'alignItems' : 'flex-end' }}>
 
@@ -126,6 +128,7 @@ const TransactionScreen = ({navigation}) => {
                         color="black" 
                         style={{ paddingTop:5 }}
                       />
+                      <Text>Remain -{'\n'} { element.item.remain_bal }</Text>
                     </TouchableOpacity>
                   </View>
 
