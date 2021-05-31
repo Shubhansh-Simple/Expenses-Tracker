@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect } from 'react';
 
 import { View, 
          Text,
@@ -9,7 +9,7 @@ import  {FontAwesome5 } from '@expo/vector-icons';
 // LOCAL
 import ButtonComponent from '../components/ButtonComponent';
 import ModalComponent  from '../components/ModalComponent';
-//import StraightLine    from '../components/StraightLine';
+import StraightLine    from '../components/StraightLine';
 
 // DATABASE
 import { pocket, credit, source } from '../database_code/sqlQueries';
@@ -73,7 +73,9 @@ const HomeScreen = ()  =>  {
                     is_credit, 
                     source_name ],
                    'Credit-I',
-                   databaseData=>insertPocket( credit_amount,is_credit,credit_type )
+                   databaseData=>{
+                     insertPocket( credit_amount,is_credit,credit_type )
+                   }
                  )
   }
 
@@ -140,7 +142,7 @@ const HomeScreen = ()  =>  {
 
       <Text style={{ 
         fontSize:40,
-        color : 'white',
+        color : '#eda344',
         fontStyle : 'italic',
         fontWeight : '400',
       }}>
@@ -149,7 +151,7 @@ const HomeScreen = ()  =>  {
       <FontAwesome5 
         name='comments-dollar' 
         size={110}
-        color='white'
+        color='#eda344'
       />
 
       {/*CREDIT MODAL*/}
@@ -243,6 +245,8 @@ const HomeScreen = ()  =>  {
           <Text style={ styles.currentBalStyle }> {currentOnline} Rs </Text>
         </View>   
 
+        <StraightLine color='#272b28' width={1} />
+
         <View style={ styles.currentBalContainer }>
           <Text style={ styles.currentBalStyle }> Total Balance </Text>
           <Text style={ styles.currentBalStyle }> {currentBal} Rs </Text>
@@ -260,14 +264,14 @@ const styles = StyleSheet.create({
     flex : 1,
     alignItems : 'center',
     justifyContent : 'center',
-    backgroundColor : '#272b28',
+    backgroundColor : '#edebd4',
   },
 
   currentBalParentContainer : { 
-    backgroundColor:'#393b39', 
-    borderRadius : 20,
+    backgroundColor:'#747368', 
     marginVertical : 10,
-    alignSelf : 'stretch'
+    alignSelf : 'stretch',
+    padding : 2,
   },
 
   currentBalContainer : {
@@ -277,9 +281,9 @@ const styles = StyleSheet.create({
   },
   
   currentBalStyle : {
-    padding : 15,
-    fontSize : 20,
-    color : 'white',
+    paddingVertical : 12,
+    fontSize : 18,
+    color : '#d8d8d6',
     textAlignVertical : 'center',
     fontStyle : 'italic',
     textAlign : 'center',

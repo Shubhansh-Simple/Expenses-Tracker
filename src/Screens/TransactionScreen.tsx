@@ -1,4 +1,6 @@
 import React,{ useEffect,useState } from 'react';
+
+
 import { View, 
          Text,
          TouchableOpacity,
@@ -17,19 +19,22 @@ import { credit }    from '../database_code/sqlQueries';
 import queryExecutor from '../database_code/starterFunction';
 
 
-const TransactionScreen = () => {
+const TransactionScreen = ({navigation}) => {
 
   // React STATE
   const [ creditData, setCreditData ]           = useState([]);
   const [ showDescription, setShowDescription ] = useState(false)
-  const [ description, setDescription ] = useState({})
+  const [ description, setDescription ] = useState('')
+  const [ creditType, setCreditType ]   = useState('')
+
+ 
 
   useEffect( ()=>{
-  /*
-   * FIRST THING HAPPEN
-   * AFTER LOADING
-   * THIS SCREEN
-   */
+    /*
+     * FIRST THING HAPPEN
+     * AFTER LOADING
+     * THIS SCREEN
+     */
 
     // DATABASE SECTION STARTS
     const readingCredit = ()  =>  {
@@ -39,14 +44,23 @@ const TransactionScreen = () => {
       queryExecutor( credit.readCreditQuery,
                      null,
                      'Credit-R',
-                     databaseData=>setCreditData(databaseData) 
+                     databaseData=>{
+                       { databaseData.length !== creditData.length 
+                           ? 
+                         setCreditData(databaseData) 
+                           : 
+                         null
+                       }
+                     }
                    )
     }
 
-    console.log('Inside useEffect of transaction.')
-    readingCredit()
-  },[])
+    const unsubscribe = navigation.addListener('focus', ()=>{
+      readingCredit()
+    });
 
+	return unsubscribe;
+  },[ navigation ] )
 
   return (
     <View style={{ flex : 1}}>
@@ -61,6 +75,7 @@ const TransactionScreen = () => {
           emojiSize={84}
         />
           :
+
         <View style={ styles.homeStyle }>
 
           <Text style={{ fontSize : 20, textAlign : 'center'}}>
@@ -69,7 +84,7 @@ const TransactionScreen = () => {
 
           {/* SHOW DESCRIPTION MODAL */}
           <ActionSheet 
-            sheetTitle       ='Description for this transaction'
+            sheetTitle       ={creditType.toUpperCase()+' Payment'}
             sheetDescription ={ description }
             listItemColor    ='#0095ff'
             sheetData        ={[]}
@@ -96,10 +111,14 @@ const TransactionScreen = () => {
                       {element.item.credit_amount}Rs
                     </Text>
          
-                    <TouchableOpacity onPress={ ()=>{ setShowDescription(true),
-                                                      setDescription(
-                                                        [element.item.credit_description]
-                                                     ) 
+                    <TouchableOpacity onPress={ ()=>{ 
+                                                 setShowDescription(true),
+                                                 setDescription(
+                                                   element.item.credit_description
+                                                 )
+                                                 setCreditType(
+                                                   element.item.credit_type
+                                                 )
                                               }}>
                       <MaterialCommunityIcons 
                         name="comment-eye-outline" 

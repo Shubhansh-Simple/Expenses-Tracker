@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
 
   modalAmountInput : {
     fontSize : 40,
-    //fontWeight : 'bold',
     textAlign : 'center',
     borderBottomWidth : 2,
     borderEndColor : 'black',
@@ -243,11 +242,6 @@ const styles = StyleSheet.create({
     borderRadius : 15,
     alignSelf : 'center',
     margin : 40,
-    top : 80,
-    shadowColor : 'black',
-    shadowOffset : { width:2, height:2 },
-    shadowOpacity : 1.9,
-    paddingHorizontal : 30,
   },
 
   modalSubmitBtnText : {
