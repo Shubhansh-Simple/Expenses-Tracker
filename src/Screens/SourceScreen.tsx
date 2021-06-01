@@ -84,7 +84,7 @@ const SourceScreen = () => {
   	 * SOURCE TABLE
   	 */
 
-    if ( itemId > 1 ){
+    if ( itemId > 2 ){
       // Others id is 1
       //
       queryExecutor( source.updateSourceQuery,
@@ -102,7 +102,7 @@ const SourceScreen = () => {
   	 * SOURCE TABLE
   	 */
 
-    if ( itemId > 1 ){
+    if ( itemId > 2 ){
       // Others id is 1
       //
       queryExecutor( source.deleteSourceQuery,
@@ -143,7 +143,7 @@ const SourceScreen = () => {
     <View style={{flex : 1}}>
 
       {/* CONDITIONAL CODE */}
-      { dataSource.length === 1 
+      { dataSource.length === 2 
           ?
       <NoDataFound 
           dataTitle='No Sources Found !'
@@ -155,7 +155,7 @@ const SourceScreen = () => {
       <View style={ styles.screenContainer }>
 
         <FlatList 
-          data={ dataSource.slice(0,dataSource.length-1) }
+          data={ dataSource.slice(1,dataSource.length-1) }
           keyExtractor={ item=>item.id.toString() }
           renderItem={(element)=>{
 

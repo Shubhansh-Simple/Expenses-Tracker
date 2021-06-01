@@ -85,7 +85,7 @@ export function createPocket(){
  */
 
 
-function insertSource(){
+function insertSource( data : string ){
   /* INSERT DEFAULT VALUE TO SOURCE
    * 
    * IGNORE - we mention 'UNIQUE' source_name in table 
@@ -94,7 +94,7 @@ function insertSource(){
    */
 
   queryExecutor( 'INSERT or IGNORE'+ source.insertSourceQuery.slice(6),
-                 ['Others'],  
+                 [data],  
                  'Source-I',
                  (yo1)=>{}
                )
@@ -106,8 +106,11 @@ export function createSource(){
   queryExecutor( source.createSourceQuery, 
                   null, 
                   'Source-C',
-                  (yo1)=>{ insertSource() }
-                )
+                  (yo1)=>{ 
+                          insertSource('Others') 
+                          insertSource('Personal Use') 
+                         }
+               )
 }
 
 
