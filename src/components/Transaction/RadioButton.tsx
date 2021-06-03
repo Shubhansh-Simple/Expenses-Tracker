@@ -1,0 +1,71 @@
+import React,{useState} from 'react';
+
+import { View, 
+         StyleSheet } from 'react-native';
+
+import RadioPerButton from './RadioPerButton';
+
+
+const RadioButton = ({ radioBtnClick }) => {
+
+  const [ colorOne, setColorOne ]     = useState(true)
+  const [ colorTwo, setColorTwo ]     = useState(false)
+  const [ colorThree, setColorThree ] = useState(false)
+
+  return (
+    <View style={ styles.radioContainer }>
+
+      <RadioPerButton 
+        buttonId='2'
+        buttonText='All' 
+        isColorChange={colorOne}
+        buttonClick={ (id:string)=>{ setColorOne(true)
+                                     setColorTwo(false)
+                                     setColorThree(false)
+                                     radioBtnClick(id)
+                                   }}
+      />
+
+      <RadioPerButton 
+        buttonId='0' 
+        buttonText='Credit'
+        isColorChange={colorTwo}
+        buttonClick={ (id:string)=>{ setColorOne(false)
+                                     setColorTwo(true)
+                                     setColorThree(false)
+                                     radioBtnClick(id)
+                                   }}      
+        />
+
+      <RadioPerButton 
+        buttonId='1' 
+        buttonText='Debit' 
+        isColorChange={colorThree}
+        buttonClick={ (id:string)=>{ setColorOne(false)
+                                     setColorTwo(false)
+                                     setColorThree(true)
+                                     radioBtnClick(id)
+                                   }}
+         
+      />
+
+    </View>
+  )
+};
+
+const styles = StyleSheet.create({
+  radioContainer : {
+    flexDirection : 'row',
+    borderWidth : 2,
+    backgroundColor : '#ffe6b5',
+    borderColor : '#ffe6b5',
+    borderRadius : 13,
+    justifyContent : 'space-around',
+    marginTop : 20,
+  },
+ 
+});
+
+export default RadioButton;
+
+

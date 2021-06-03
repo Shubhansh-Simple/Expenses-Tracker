@@ -1,6 +1,5 @@
 import React,{ useEffect,useState } from 'react';
 
-
 import { View, 
          Text,
          TouchableOpacity,
@@ -13,35 +12,29 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import NoDataFound          from '../components/NoDataFound';
 import TransactionIcon      from '../components/Transaction/TransactionIcon';
 import ActionSheet          from '../components/ActionSheet';
+import RadioButton          from '../components/Transaction/RadioButton';
 
 // DATABASE
 import { credit }    from '../database_code/sqlQueries';
 import queryExecutor from '../database_code/starterFunction';
 
 
-const TransactionScreen = ({navigation}) => {
+const TransactionScreen = () => {
 
   // React STATE
   const [ creditData, setCreditData ]           = useState([]);
   const [ showDescription, setShowDescription ] = useState(false)
   const [ description, setDescription ] = useState('')
   const [ creditType, setCreditType ]   = useState('')
+  const [ remainBal, setRemainBal ]   = useState([])
 
- 
+  const [ extraQuery, setExtraQuery ] = useState('2')
 
-  useEffect( ()=>{
-    /*
-     * FIRST THING HAPPEN
-     * AFTER LOADING
-     * THIS SCREEN
-     */
-
-    // DATABASE SECTION STARTS
-    const readingCredit = ()  =>  {
+  const readingCredit = ()  =>  {
       /*
        * READING TABLE 
        */
-      queryExecutor( credit.readCreditQuery,
+      queryExecutor( credit.readCreditQuery + extraQuery + credit._,
                      null,
                      'Credit-R',
                      databaseData=>{
@@ -51,17 +44,38 @@ const TransactionScreen = ({navigation}) => {
                            : 
                          null
                        }
-                       console.log('The transaction - ',databaseData)
                      }
                    )
-    }
+  }
 
-    const unsubscribe = navigation.addListener('focus', ()=>{
-      readingCredit()
-    });
+  function actionDataSetter( isVisible        :boolean,
+                             descriptionData  :string,
+                             credit_type      :string,
+                             remainBal        :number ){
+    /*
+     * Setting state for 
+     * title,
+     * description,
+     * remain balance,
+     */
+    setShowDescription(isVisible),
+    setDescription( descriptionData )
+    setCreditType( credit_type )
+    setRemainBal( [{ 
+      'source_name': 'Remaining Balance - '+remainBal.toString()+' Rs', 
+      'id' : 1 
+      }] 
+    )
+  }
 
-	return unsubscribe;
-  },[ navigation ] )
+
+  useEffect( ()=> {
+                                          
+    console.log('The value of state - ',extraQuery)
+    readingCredit()
+
+  },[extraQuery])
+
 
   return (
     <View style={{ flex : 1}}>
@@ -79,21 +93,26 @@ const TransactionScreen = ({navigation}) => {
 
         <View style={ styles.homeStyle }>
 
+
           <Text style={{ fontSize : 20, textAlign : 'center'}}>
             All records
           </Text>
+
+          {/* SEGMENT BUTTON */}
+          <RadioButton 
+            radioBtnClick={ (id:string)=>setExtraQuery( id ) }
+          />
 
           {/* SHOW DESCRIPTION MODAL */}
           <ActionSheet 
             sheetTitle       ={creditType.toUpperCase()+' Payment'}
             sheetDescription ={ description }
             listItemColor    ='#0095ff'
-            sheetData        ={[]}
+            sheetData        ={remainBal}
             sheetVisible     ={ showDescription }
             setSheetVisible  ={ (bool:boolean)=>setShowDescription(bool) }
             sheetSelectedItem={item=>setShowDescription(false)}
           />
-
 
           <FlatList 
             data={creditData}
@@ -113,13 +132,12 @@ const TransactionScreen = ({navigation}) => {
                       {element.item.credit_amount}Rs
                     </Text>
          
-                    <TouchableOpacity onPress={ ()=>{ 
-                                                 setShowDescription(true),
-                                                 setDescription(
-                                                   element.item.credit_description
-                                                 )
-                                                 setCreditType(
-                                                   element.item.credit_type
+                    <TouchableOpacity onPress={ ()=>{
+                                                 actionDataSetter(
+                                                   true,
+                                                   element.item.credit_description,
+                                                   element.item.credit_type,
+                                                   element.item.remain_bal,
                                                  )
                                               }}>
                       <MaterialCommunityIcons 
@@ -128,7 +146,6 @@ const TransactionScreen = ({navigation}) => {
                         color="black" 
                         style={{ paddingTop:5 }}
                       />
-                      <Text>Remain -{'\n'} { element.item.remain_bal }</Text>
                     </TouchableOpacity>
                   </View>
 

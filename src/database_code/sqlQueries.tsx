@@ -17,7 +17,8 @@ export const credit = {
     insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, remain_bal, source_name_id ) '+
                         'VALUES(?,?,?,?,?,?);',
 
-    readCreditQuery   : 'SELECT * FROM CREDIT ORDER BY id DESC;',
+    readCreditQuery   : 'SELECT * FROM CREDIT WHERE is_credit!=',
+    _                 : ' ORDER BY ID DESC',
 }
 
 export const source = {
