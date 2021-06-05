@@ -43,11 +43,8 @@ const RadioPerButton = ({ buttonId,
 const styles = StyleSheet.create({
 
   radioInnerContainer : {
-    //backgroundColor : 'black',
-    //paddingVertical : 3,
     paddingTop : 3,
     borderRadius : 12,
-    //width : 100,
   },
 
   radioText : {

@@ -2,12 +2,18 @@ import React,{ useEffect,useState } from 'react';
 
 import { View, 
          Text,
+         TouchableOpacity,
          StyleSheet } from 'react-native';
 import { Entypo } from '@expo/vector-icons'; 
 
 import reuseStyle      from '../Styles/reuseStyle';
 
-const NoDataFound = ({dataTitle, dataDescription, emojiName, emojiSize })  =>  {
+const NoDataFound = ({ dataTitle, 
+                       dataDescription, 
+                       emojiName, 
+                       emojiSize,
+                       callBack,
+                    })  =>  {
 
   return (
     <View style={ reuseStyle.keepItCenter }>
@@ -20,6 +26,12 @@ const NoDataFound = ({dataTitle, dataDescription, emojiName, emojiSize })  =>  {
       <Text style={ styles.descriptionStyle}>
         { dataDescription }
       </Text>
+
+      <TouchableOpacity onPress={()=>callBack()}>
+        <Text style={ styles.retryBtn }>
+          Retry
+        </Text>
+      </TouchableOpacity>
     </View>
   )
 };
@@ -32,6 +44,11 @@ const styles = StyleSheet.create({
   },
   descriptionStyle : {
     fontSize : 14,
+  },
+  retryBtn : {
+    color :'#036ffc',
+    fontSize : 18,
+    paddingVertical : 10,
   },
 });
 

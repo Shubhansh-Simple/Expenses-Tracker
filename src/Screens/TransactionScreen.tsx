@@ -33,24 +33,16 @@ const TransactionScreen = () => {
 
   const queryContainer = useRef('')
 
-  const readingCredit = ( extraQuery:string )  =>  {
+  const readingCredit = ( extraQuery:string ) => {
       /*
        * READING TABLE 
        */
-      console.log( 'The value of query is - ',extraQuery )
       queryContainer.current = extraQuery
+
       queryExecutor( credit.readCreditQuery + extraQuery + credit._,
                      null,
                      'Credit-R',
-                     databaseData=>{
-                        setCreditData(databaseData) 
-                      //{ databaseData.length !== creditData.length 
-                      //    ? 
-                      //  setCreditData(databaseData) 
-                      //    : 
-                      //  null
-                      //}
-                     }
+                     databaseData=>setCreditData(databaseData) 
                    )
   }
 
@@ -102,88 +94,85 @@ const TransactionScreen = () => {
 
   return (
     <View style={{ flex : 1}}>
+      <View style={ styles.homeStyle }>
 
-      {/* CONDITIONAL CODE */}
-      { creditData.length === 0 
-          ?
-        <NoDataFound 
-          dataTitle='No Transaction Found !'
-          dataDescription='Kindly add some data first'
-          emojiName='emoji-sad' 
-          emojiSize={84}
+        {/* SEGMENT BUTTON */}
+        <RadioButton 
+          radioBtnClick={ (id:string)=>readingCredit(id) }
         />
-          :
 
-        <View style={ styles.homeStyle }>
-
-
-          <Text style={{ fontSize : 20, textAlign : 'center'}}>
-            All records
-          </Text>
-
-          {/* SEGMENT BUTTON */}
-          <RadioButton 
-            radioBtnClick={ (id:string)=>readingCredit(id) }
+        {/* CONDITIONAL CODE */}
+        { creditData.length === 0 
+            ?
+          <NoDataFound 
+            dataTitle='No Transaction Found !'
+            dataDescription='Kindly add some data first'
+            emojiName='emoji-sad' 
+            emojiSize={84}
+            callBack={ ()=>readingCredit(queryContainer.current) }
           />
+            :
 
-          {/* SHOW DESCRIPTION MODAL */}
-          <ActionSheet 
-            sheetTitle       ={creditType.toUpperCase()+' Payment'}
-            sheetDescription ={ description }
-            listItemColor    ='#0095ff'
-            sheetData        ={remainBal}
-            sheetVisible     ={ showDescription }
-            setSheetVisible  ={ (bool:boolean)=>setShowDescription(bool) }
-            sheetSelectedItem={item=>setShowDescription(false)}
-          />
+          <View>
 
-          <FlatList 
-            data={creditData}
-            keyExtractor={ item=>item.id.toString() }
-            refreshControl={
-              <RefreshControl 
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-              />
-            }
-            showsVerticalScrollIndicator={false}
-            renderItem={(element)=>{
-              return (
-                <View style={styles.itemContainer}>
+            {/* SHOW DESCRIPTION MODAL */}
+            <ActionSheet 
+              sheetTitle       ={creditType.toUpperCase()+' Payment'}
+              sheetDescription ={ description }
+              listItemColor    ='#0095ff'
+              sheetData        ={remainBal}
+              sheetVisible     ={ showDescription }
+              setSheetVisible  ={ (bool:boolean)=>setShowDescription(bool) }
+              sheetSelectedItem={ item=>setShowDescription(false) }
+            />
 
-                  {/* Decide Icons */}
-                  <TransactionIcon 
-                    is_credit = {element.item.is_credit}
-                  />
-                  <View style={{ 'alignItems' : 'flex-end' }}>
+            <FlatList 
+              data={creditData}
+              keyExtractor={ item=>item.id.toString() }
+              refreshControl={
+                <RefreshControl 
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
+              showsVerticalScrollIndicator={false}
+              renderItem={(element)=>{
+                return (
+                  <View style={styles.itemContainer}>
 
-                    <Text style={ styles.itemStyle }>
-                      {element.item.credit_amount}Rs
-                    </Text>
-         
-                    <TouchableOpacity onPress={ ()=>{
-                                                 actionDataSetter(
-                                                   true,
-                                                   element.item.credit_description,
-                                                   element.item.credit_type,
-                                                   element.item.remain_bal,
-                                                 )
-                                              }}>
-                      <MaterialCommunityIcons 
-                        name="comment-eye-outline" 
-                        size={24} 
-                        color="black" 
-                        style={{ paddingTop:5 }}
-                      />
-                    </TouchableOpacity>
+                    {/* Decide Icons */}
+                    <TransactionIcon 
+                      is_credit = {element.item.is_credit}
+                    />
+                    <View style={{ 'alignItems' : 'flex-end' }}>
+
+                      <Text style={ styles.itemStyle }>
+                        {element.item.credit_amount}Rs
+                      </Text>
+            
+                      <TouchableOpacity onPress={ ()=>{
+                                                   actionDataSetter(
+                                                     true,
+                                                     element.item.credit_description,
+                                                     element.item.credit_type,
+                                                     element.item.remain_bal,
+                                                   )
+                                                }}>
+                        <MaterialCommunityIcons 
+                          name="comment-eye-outline" 
+                          size={24} 
+                          color="black" 
+                          style={{ paddingTop:5 }}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-
-                </View>
-              )
-            }}
-          />
-        </View>
-      }
+                )
+              }}
+            />
+          </View>
+        } 
+      </View>
     </View>
   )  
 };
@@ -201,8 +190,6 @@ const styles = StyleSheet.create({
     flexDirection : 'row',
     padding : 10,
     marginVertical : 10,
-    //borderWidth : 1,
-    //borderColor : 'black',
     borderRadius : 8,
     backgroundColor : '#ffe6b5',
     shadowColor : 'black',
