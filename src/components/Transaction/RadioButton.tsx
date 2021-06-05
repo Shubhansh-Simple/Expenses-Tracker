@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 
 import { View, 
          StyleSheet } from 'react-native';
@@ -11,6 +11,18 @@ const RadioButton = ({ radioBtnClick }) => {
   const [ colorOne, setColorOne ]     = useState(true)
   const [ colorTwo, setColorTwo ]     = useState(false)
   const [ colorThree, setColorThree ] = useState(false)
+
+  useEffect( ()=>{
+    /*
+     * we want to keep
+     * slider at 'All' section
+     * on first time
+     * opening app
+     */
+    setColorOne(true)
+    setColorTwo(false)
+    setColorThree(false)
+  },[])
 
   return (
     <View style={ styles.radioContainer }>

@@ -1,9 +1,10 @@
-import React,{ useEffect,useState } from 'react';
+import React,{ useEffect, useState, useRef } from 'react';
 
 import { View, 
          Text,
          TouchableOpacity,
          FlatList,
+         RefreshControl,
          StyleSheet } from 'react-native';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
@@ -22,31 +23,50 @@ import queryExecutor from '../database_code/starterFunction';
 const TransactionScreen = () => {
 
   // React STATE
+  const [ refreshing, setRefreshing ]           = useState(false)
   const [ creditData, setCreditData ]           = useState([]);
   const [ showDescription, setShowDescription ] = useState(false)
-  const [ description, setDescription ] = useState('')
-  const [ creditType, setCreditType ]   = useState('')
-  const [ remainBal, setRemainBal ]   = useState([])
 
-  const [ extraQuery, setExtraQuery ] = useState('2')
+  const [ description, setDescription ]         = useState('')
+  const [ creditType, setCreditType ]           = useState('')
+  const [ remainBal, setRemainBal ]             = useState([])
 
-  const readingCredit = ()  =>  {
+  const queryContainer = useRef('')
+
+  const readingCredit = ( extraQuery:string )  =>  {
       /*
        * READING TABLE 
        */
+      console.log( 'The value of query is - ',extraQuery )
+      queryContainer.current = extraQuery
       queryExecutor( credit.readCreditQuery + extraQuery + credit._,
                      null,
                      'Credit-R',
                      databaseData=>{
-                       { databaseData.length !== creditData.length 
-                           ? 
-                         setCreditData(databaseData) 
-                           : 
-                         null
-                       }
+                        setCreditData(databaseData) 
+                      //{ databaseData.length !== creditData.length 
+                      //    ? 
+                      //  setCreditData(databaseData) 
+                      //    : 
+                      //  null
+                      //}
                      }
                    )
   }
+
+
+  const onRefresh = React.useCallback( ()=> {
+   /*
+    * because we want the old query value
+    * for refreshing the page.
+    */
+   setRefreshing(true)
+   readingCredit(queryContainer.current)
+   setRefreshing(false)
+   console.log('You refresh the page actually.')
+    
+  },[refreshing] )
+
 
   function actionDataSetter( isVisible        :boolean,
                              descriptionData  :string,
@@ -62,20 +82,23 @@ const TransactionScreen = () => {
     setDescription( descriptionData )
     setCreditType( credit_type )
     setRemainBal( [{ 
-      'source_name': 'Remaining Balance - '+remainBal.toString()+' Rs', 
+      'source_name': 'Remaining Balance - '+
+                      remainBal.toString()+
+                     ' Rs', 
       'id' : 1 
       }] 
     )
   }
 
-
   useEffect( ()=> {
-                                          
-    console.log('The value of state - ',extraQuery)
-    readingCredit()
-
-  },[extraQuery])
-
+    /*
+     * we want all the data
+     * of transaction 
+     * on first time
+     * opening app
+     */
+    readingCredit('2')
+  },[])
 
   return (
     <View style={{ flex : 1}}>
@@ -100,7 +123,7 @@ const TransactionScreen = () => {
 
           {/* SEGMENT BUTTON */}
           <RadioButton 
-            radioBtnClick={ (id:string)=>setExtraQuery( id ) }
+            radioBtnClick={ (id:string)=>readingCredit(id) }
           />
 
           {/* SHOW DESCRIPTION MODAL */}
@@ -117,6 +140,12 @@ const TransactionScreen = () => {
           <FlatList 
             data={creditData}
             keyExtractor={ item=>item.id.toString() }
+            refreshControl={
+              <RefreshControl 
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
             showsVerticalScrollIndicator={false}
             renderItem={(element)=>{
               return (
@@ -172,14 +201,14 @@ const styles = StyleSheet.create({
     flexDirection : 'row',
     padding : 10,
     marginVertical : 10,
-    borderWidth : 1,
-    borderColor : 'black',
+    //borderWidth : 1,
+    //borderColor : 'black',
     borderRadius : 8,
     backgroundColor : '#ffe6b5',
     shadowColor : 'black',
     shadowOffset : { width:0, height:9 },
     shadowOpacity : 0.9,
-    elevation : 9,
+    elevation : 4,
     shadowRadius : 2,
     justifyContent : 'space-between',
   },
