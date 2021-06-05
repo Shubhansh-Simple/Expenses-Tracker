@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex : 1,
     justifyContent : 'flex-start',
     borderRadius : 50,
-    marginTop : 90,
+    marginTop : 15,
     alignItems : 'center',
     padding : 20,
     marginHorizontal : 12,
@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
   
   textStyle : {
     fontSize : 25,
-    //paddingVertical : 20,
     paddingBottom : 0,
   },
 
