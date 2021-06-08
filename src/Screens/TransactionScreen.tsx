@@ -18,7 +18,7 @@ import {listItemMaker}      from '../CleanCode/CleanCode';
 import flatListInterface from '../Interfaces/Interface';
 
 // DATABASE
-import { credit }    from '../database_code/sqlQueries';
+import { credit,pocket }    from '../database_code/sqlQueries';
 import queryExecutor from '../database_code/starterFunction';
 
 
@@ -36,6 +36,8 @@ const TransactionScreen = () => {
   const [ creditType, setCreditType ]   = useState('')
   const [ remainBal, setRemainBal ]     = useState<flatListInterface[]>([])
 
+  const [ pocketBal, setPocketBal ]  = useState({})
+
   const queryContainer = useRef('')
 
   const readingCredit = ( extraQuery:string ) => {
@@ -49,6 +51,34 @@ const TransactionScreen = () => {
                      'Credit-R',
                      databaseData=>setCreditData(databaseData)
                    )
+  }
+
+  const readingPocket = () => {
+    /*
+     * READING Pocket
+     * table
+     */
+    queryExecutor( pocket.readPocketQuery+' WHERE id=1',
+                   null,
+                   'Pocket-R',
+                   databaseData=>setPocketBal({
+                                   'currentBal' : databaseData[0].currentBal,
+                                   'cashBal' : databaseData[0].cashBal,
+                                   'onlineBal' :databaseData[0].onlineBal
+                                 })
+                 )
+  }
+
+  const deleteCredit = ( itemId:number, credit_amount:number ) => {
+    /*
+     * DELETE FROM
+     * CREDIT TABLE
+     */
+    queryExecutor( credit.deleteCreditQuery, 
+                   [itemId ],
+                   'Credit-D',
+                   databaseData=>console.log('Return after del ',databaseData)
+    )
   }
 
 
@@ -75,7 +105,8 @@ const TransactionScreen = () => {
      * description,
      * remain balance,
      */
-    setShowDescription(isVisible),
+
+    setShowDescription( isVisible ),
     setDescription( descriptionData )
     setCreditType( credit_type )
     setRemainBal( 
@@ -97,6 +128,15 @@ const TransactionScreen = () => {
      */
     readingCredit('2')
   },[])
+
+  useEffect( ()=> {
+    /*
+     * we want pocket balance only
+     * on opening the delete popup
+     */
+    readingPocket()
+  },[showDelete])
+
 
   return (
     <View style={{ flex : 1}}>

@@ -17,6 +17,8 @@ export const credit = {
     insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, remain_bal, source_name_id ) '+
                         'VALUES(?,?,?,?,?,?);',
 
+    deleteCreditQuery : 'DELETE FROM CREDIT WHERE id=?;',
+
     // JOINING TABLE
     readCreditQuery   : 'SELECT CREDIT.ID,credit_amount,credit_description,'+
                         'credit_type,is_credit,remain_bal,source_name '+
