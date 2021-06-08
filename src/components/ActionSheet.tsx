@@ -41,8 +41,12 @@ const ActionSheet = ({ sheetTitle,
         visible={sheetVisible}
         animationType='slide'
         transparent={true}
-        onRequestClose={ ()=>{ setSheetVisible(false) } }
+        onRequestClose={()=>setSheetVisible(false)}
       >
+      <TouchableWithoutFeedback 
+        onPressOut={()=>setSheetVisible(false)}
+      >
+
         <View style={ styles.modalContainer } >
 
           <View style={ styles.modalBackground }>
@@ -107,6 +111,8 @@ const ActionSheet = ({ sheetTitle,
           </TouchableWithoutFeedback>
 
         </View>
+  
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   )
