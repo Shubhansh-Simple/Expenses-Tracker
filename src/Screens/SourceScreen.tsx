@@ -150,6 +150,7 @@ const SourceScreen = () => {
           dataDescription='Kindly add some sources first'
           emojiName='emoji-neutral'
           emojiSize={84}
+          callBack={()=>readingSource() }
       />
           :
       <View style={ styles.screenContainer }>

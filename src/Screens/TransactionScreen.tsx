@@ -42,7 +42,10 @@ const TransactionScreen = () => {
       queryExecutor( credit.readCreditQuery + extraQuery + credit._,
                      null,
                      'Credit-R',
-                     databaseData=>setCreditData(databaseData) 
+                     databaseData=>{
+                       console.log('the data from database - ',databaseData)
+        setCreditData(databaseData) 
+      }
                    )
   }
 
@@ -142,6 +145,7 @@ const TransactionScreen = () => {
 
                     {/* Decide Icons */}
                     <TransactionIcon 
+                      source_name={element.item.source_name}
                       is_credit = {element.item.is_credit}
                     />
                     <View style={{ 'alignItems' : 'flex-end' }}>

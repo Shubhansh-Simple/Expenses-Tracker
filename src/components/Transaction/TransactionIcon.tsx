@@ -6,19 +6,19 @@ import { View,
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-const TransactionIcon = ( is_credit:number ) =>{
+const TransactionIcon = ({ is_credit, source_name }) =>{
 
   return (
     <View>
       <View style={{ flexDirection : 'row' }}>
 
         <MaterialCommunityIcons 
-                    name={ is_credit.is_credit 
+                    name={ is_credit 
                              ? 
                            'account-arrow-left'
                              : 
                            'account-arrow-right' }
-                    color={ is_credit.is_credit 
+                    color={ is_credit 
                               ? 
                             '#239964' 
                               : 
@@ -32,7 +32,7 @@ const TransactionIcon = ( is_credit:number ) =>{
             { is_credit ? 'Recieved From' : 'Debit From' }
           </Text>
           <Text style={{ fontWeight : 'bold' }}>
-            Username
+            {source_name}
           </Text>
         </View>
 

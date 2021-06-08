@@ -17,8 +17,12 @@ export const credit = {
     insertCreditQuery : 'INSERT INTO Credit( credit_amount, credit_description, credit_type, is_credit, remain_bal, source_name_id ) '+
                         'VALUES(?,?,?,?,?,?);',
 
-    readCreditQuery   : 'SELECT * FROM CREDIT WHERE is_credit!=',
-    _                 : ' ORDER BY ID DESC',
+    // JOINING TABLE
+    readCreditQuery   : 'SELECT CREDIT.ID,credit_amount,credit_description,'+
+                        'credit_type,is_credit,remain_bal,source_name '+
+                        'FROM CREDIT JOIN SOURCE ON '+
+                        'CREDIT.source_name_id=SOURCE.id WHERE is_credit!=',
+    _                 : ' ORDER BY CREDIT.ID DESC',
 }
 
 export const source = {
