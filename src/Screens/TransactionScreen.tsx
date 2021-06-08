@@ -14,6 +14,8 @@ import NoDataFound          from '../components/NoDataFound';
 import TransactionIcon      from '../components/Transaction/TransactionIcon';
 import ActionSheet          from '../components/ActionSheet';
 import RadioButton          from '../components/Transaction/RadioButton';
+import {listItemMaker}      from '../CleanCode/CleanCode';
+import flatListInterface from '../Interfaces/Interface';
 
 // DATABASE
 import { credit }    from '../database_code/sqlQueries';
@@ -27,9 +29,12 @@ const TransactionScreen = () => {
   const [ creditData, setCreditData ]           = useState([]);
   const [ showDescription, setShowDescription ] = useState(false)
 
-  const [ description, setDescription ]         = useState('')
-  const [ creditType, setCreditType ]           = useState('')
-  const [ remainBal, setRemainBal ]             = useState([])
+  const [ showDelete, setShowDelete ] = useState(false)
+  const [ deleteItem, setDeleteItem ] = useState<flatListInterface[]>([])
+
+  const [ description, setDescription ] = useState('')
+  const [ creditType, setCreditType ]   = useState('')
+  const [ remainBal, setRemainBal ]     = useState<flatListInterface[]>([])
 
   const queryContainer = useRef('')
 
@@ -42,10 +47,7 @@ const TransactionScreen = () => {
       queryExecutor( credit.readCreditQuery + extraQuery + credit._,
                      null,
                      'Credit-R',
-                     databaseData=>{
-                       console.log('the data from database - ',databaseData)
-        setCreditData(databaseData) 
-      }
+                     databaseData=>setCreditData(databaseData)
                    )
   }
 
@@ -76,12 +78,13 @@ const TransactionScreen = () => {
     setShowDescription(isVisible),
     setDescription( descriptionData )
     setCreditType( credit_type )
-    setRemainBal( [{ 
-      'source_name': 'Remaining Balance - '+
-                      remainBal.toString()+
-                     ' Rs', 
-      'id' : 1 
-      }] 
+    setRemainBal( 
+      listItemMaker(
+        remainBal.toString(),
+        '1',
+        'Remaining Balance -',
+        'Rs'
+      )
     )
   }
 
@@ -129,6 +132,17 @@ const TransactionScreen = () => {
               sheetSelectedItem={ item=>setShowDescription(false) }
             />
 
+            {/* ARE YOU DELETE COMPONENT */}
+            <ActionSheet 
+              sheetTitle       = 'Are You Sure ?'
+              sheetDescription = "You can't undo this action."
+              listItemColor    = 'red'
+              sheetData        = { deleteItem }
+              sheetVisible     = { showDelete }
+              setSheetVisible  = { (bool:boolean)=>setShowDelete(bool) }
+              sheetSelectedItem= { item=>console.log('You click delete button') }
+            />
+
             <FlatList 
               data={creditData}
               keyExtractor={ item=>item.id.toString() }
@@ -140,14 +154,28 @@ const TransactionScreen = () => {
               }
               showsVerticalScrollIndicator={false}
               renderItem={(element)=>{
+
                 return (
                   <View style={styles.itemContainer}>
 
                     {/* Decide Icons */}
-                    <TransactionIcon 
-                      source_name={element.item.source_name}
-                      is_credit = {element.item.is_credit}
-                    />
+                    <TouchableOpacity 
+                      onPress={()=>
+                        { setDeleteItem(
+                            listItemMaker(
+                              element.item.source_name,
+                              element.item.id,
+                              'Delete',
+                            )
+                          )
+                          setShowDelete( true )
+                        }}>
+
+                      <TransactionIcon 
+                        source_name={element.item.source_name}
+                        is_credit = {element.item.is_credit}
+                      />
+                    </TouchableOpacity>
                     <View style={{ 'alignItems' : 'flex-end' }}>
 
                       <Text style={ styles.itemStyle }>
