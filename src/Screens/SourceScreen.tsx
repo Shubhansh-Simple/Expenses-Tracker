@@ -18,6 +18,9 @@ import ActionSheet    from '../components/ActionSheet';
 import AlertComponent from '../components/AlertComponent';
 import PopupInput     from '../components/PopupInput';
 
+import {listItemMaker}  from '../CleanCode/CleanCode';
+import flatListInterface from '../Interfaces/Interface';
+
 
 const SourceScreen = () => {
 
@@ -39,7 +42,7 @@ const SourceScreen = () => {
   
   // ActionSheet for delete
   const [ actionDel , setActionDel ]         = useState(false)
-  const [ actionDelData , setActionDelData ] = useState([])
+  const [ actionDelData , setActionDelData ] = useState<flatListInterface[]>([])
 
   /************
    * FUNCTION *
@@ -156,7 +159,7 @@ const SourceScreen = () => {
       <View style={ styles.screenContainer }>
 
         <FlatList 
-          data={ dataSource.slice(1,dataSource.length-1) }
+          data={ dataSource.slice(0,dataSource.length-2) }
           keyExtractor={ item=>item.id.toString() }
           renderItem={(element)=>{
 
@@ -180,10 +183,11 @@ const SourceScreen = () => {
                 <View style={ styles.iconContainer }>
                   <TouchableOpacity onPress={()=>
                     { setActionDelData(
-                        [{ 
-                            source_name :'Delete '+ element.item.source_name,
-                            id          : element.item.id 
-                        }]
+                        listItemMaker(
+                          element.item.source_name,
+                          element.item.id,
+                          'Delete'
+                        )
                       )
                       setActionDel( true )
                     }
@@ -227,10 +231,10 @@ const SourceScreen = () => {
         setAlertVisible = { (bool:boolean)=>setModalAlert(bool) }
       />
 
-      {/* CHOICE COMPONENT */}
+      {/* ARE YOU DELETE COMPONENT */}
       <ActionSheet 
         sheetTitle         = 'Are You Sure ?'
-        sheetDescription   = 'You cant undo this action'
+        sheetDescription   = "You can't undo this action"
         listItemColor      = 'red'
         sheetData          = { actionDelData }
         sheetVisible       = { actionDel }
