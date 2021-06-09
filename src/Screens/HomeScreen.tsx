@@ -26,7 +26,6 @@ const HomeScreen = ()  =>  {
   const [ currentCash, setCurrentCash ]     =  useState(0);
   const [ currentOnline, setCurrentOnline ] =  useState(0);
 
-
   const [ sourceOptions, setSourceOptions ] = useState([])
 
   // MODAL's STATE
@@ -47,11 +46,10 @@ const HomeScreen = ()  =>  {
                    null,
                    'Pocket-R',
                    databaseData=>{ 
-                     console.log('Data from pocket database - ',databaseData)
+                     console.log('Pocket database - ',databaseData)
                      setCurrentBal(databaseData[0].currentBal)
                      setCurrentCash(databaseData[0].cashBal)
                      setCurrentOnline(databaseData[0].onlineBal)
-                  
                    }
                  )
   }
@@ -78,9 +76,7 @@ const HomeScreen = ()  =>  {
                     source_name
                     ],
                    'Credit-I',
-                   databaseData=>{
-                     insertPocket( credit_amount,is_credit,credit_type,remain_bal )
-                   }
+                   databaseData=>insertPocket( credit_amount,is_credit,credit_type,remain_bal )
                  )
   }
 
@@ -192,31 +188,6 @@ const HomeScreen = ()  =>  {
                                                                    +data4 )}
       />
 
-      <View style={{ flexDirection : 'row', marginHorizontal : 10, }}>
-        <View style={{ 
-          borderBottomWidth : 1, 
-          borderBottomColor : 'white',
-          alignSelf: 'stretch',
-          width : '20%',
-        }}>
-        </View>
-        <Text style={{ 
-          fontSize : 20,
-          color : '#bd1368',
-          marginHorizontal : 20,
-          top : 10,
-          fontStyle : 'italic',
-        }}>
-          Navigator 
-        </Text>
-        <View style={{ 
-          borderBottomWidth : 1, 
-          borderBottomColor : 'white',
-          alignSelf: 'stretch',
-          width : '20%',
-        }}>
-        </View>
-      </View>
 
 
       {/* MAIN BUTTON SECTION STARTS */}
