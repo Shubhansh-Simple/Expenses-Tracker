@@ -210,9 +210,10 @@ const TransactionScreen = () => {
   useEffect( ()=> {
     /*
      * we want pocket balance only
-     * on opening the delete popup
+     * on opening the delete popup opens
      */
-    readingPocket()
+    { showDelete ? readingPocket() : null }
+    
   },[showDelete])
 
 
