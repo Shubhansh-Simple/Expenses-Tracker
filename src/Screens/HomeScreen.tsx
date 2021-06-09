@@ -189,28 +189,6 @@ const HomeScreen = ()  =>  {
       />
 
 
-
-      {/* MAIN BUTTON SECTION STARTS */}
-      
-      <View style={ styles.mainButtonContainer }>
-
-        <ButtonComponent 
-          btnColor='#3ea832' 
-          btnText='Increment' 
-          iconName='plus' 
-          callModal={(bool : boolean ) => setModalCreditVisible(bool)} 
-        />
-
-        <ButtonComponent 
-          btnColor='#ff0022' 
-          btnText='Decrement' 
-          iconName='minus' 
-          callModal={(bool : boolean ) => setModalDebitVisible(bool)} 
-        />
-
-      </View>
-      {/* MAIN BUTTON SECTION ENDS */}
-
       {/* CURRENT BALANCE */}
       <View style={ styles.currentBalParentContainer }>
 
@@ -233,6 +211,27 @@ const HomeScreen = ()  =>  {
 
       </View>
 
+      {/* MAIN BUTTON SECTION STARTS */}
+      
+      <View style={ styles.mainButtonContainer }>
+
+        <ButtonComponent 
+          btnColor='#3ea832' 
+          btnText='Increment' 
+          iconName='plus' 
+          callModal={(bool : boolean ) => setModalCreditVisible(bool)} 
+        />
+
+        <ButtonComponent 
+          btnColor='#ff0022' 
+          btnText='Decrement' 
+          iconName='minus' 
+          callModal={(bool : boolean ) => setModalDebitVisible(bool)} 
+        />
+
+      </View>
+      {/* MAIN BUTTON SECTION ENDS */}
+
     </View>
   )
 };
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
   homeStyle : {
     flex : 1,
     alignItems : 'center',
-    justifyContent : 'center',
+    justifyContent : 'space-evenly',
     backgroundColor : '#edebd4',
   },
 
@@ -250,19 +249,23 @@ const styles = StyleSheet.create({
     backgroundColor:'#747368', 
     marginVertical : 10,
     alignSelf : 'stretch',
-    padding : 2,
+    padding : 20,
+    marginHorizontal : 10,
+    borderRadius : 30,
   },
 
   currentBalContainer : {
     alignSelf : 'stretch',
     flexDirection : 'row',
     justifyContent : 'space-between',
+    padding : 3,
   },
   
   currentBalStyle : {
     paddingVertical : 12,
+    padding : 10,
     fontSize : 18,
-    color : '#d8d8d6',
+    color : 'white',
     textAlignVertical : 'center',
     fontStyle : 'italic',
     textAlign : 'center',

@@ -30,6 +30,7 @@ function HomeStackScreen(){
     <HomeStack.Navigator
       screenOptions={{ headerTitleAlign : 'center', 
                        headerStyle : { height : 60},
+                       title : 'Money Tracker'
                     }}
     >
       <HomeStack.Screen 
