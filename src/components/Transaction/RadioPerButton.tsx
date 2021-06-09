@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     fontStyle : 'italic',
     textAlign : 'center',
     paddingVertical : 2, 
-    borderRadius : 13,
-    borderBottomWidth : 4,
+    borderRadius : 9,
+    borderBottomWidth : 1,
     borderBottomColor : '#ffe6b5',
   }
  

@@ -15,19 +15,23 @@ import TransactionIcon      from '../components/Transaction/TransactionIcon';
 import ActionSheet          from '../components/ActionSheet';
 import RadioButton          from '../components/Transaction/RadioButton';
 import {listItemMaker}      from '../CleanCode/CleanCode';
-import flatListInterface from '../Interfaces/Interface';
+import flatListInterface    from '../Interfaces/Interface';
+import reuseStyle           from '../Styles/reuseStyle';
 
 // DATABASE
 import { credit,pocket }    from '../database_code/sqlQueries';
-import queryExecutor from '../database_code/starterFunction';
+import queryExecutor        from '../database_code/starterFunction';
 
 
 const TransactionScreen = () => {
 
-  // React STATE
+  /*****************
+   * REACT'S STATE *
+   *****************/
+
   const [ refreshing, setRefreshing ]           = useState(false)
   const [ creditData, setCreditData ]           = useState([]);
-  const [ showDescription, setShowDescription ] = useState(false)
+  const [ showDescription, setShowDescription ] = useState(false) 
 
   const [ showDelete, setShowDelete ] = useState(false)
   const [ deleteItem, setDeleteItem ] = useState<flatListInterface[]>([])
@@ -38,7 +42,13 @@ const TransactionScreen = () => {
 
   const [ pocketBal, setPocketBal ]  = useState({})
 
-  const queryContainer = useRef('')
+  const queryContainer  = useRef('')
+  const creditContainer = useRef({})
+
+
+  /*********************
+   * DATABASE FUNCTION *
+   *********************/
 
   const readingCredit = ( extraQuery:string ) => {
       /*
@@ -63,24 +73,64 @@ const TransactionScreen = () => {
                    'Pocket-R',
                    databaseData=>setPocketBal({
                                    'currentBal' : databaseData[0].currentBal,
-                                   'cashBal' : databaseData[0].cashBal,
-                                   'onlineBal' :databaseData[0].onlineBal
+                                   'cashBal'    : databaseData[0].cashBal,
+                                   'onlineBal'  : databaseData[0].onlineBal
                                  })
                  )
   }
 
-  const deleteCredit = ( itemId:number, credit_amount:number ) => {
-    /*
-     * DELETE FROM
-     * CREDIT TABLE
-     */
+  const insertPocket = ( credit_amount : number,
+                         is_credit     : number,
+                         credit_type   : string ) => {
+
+    var two   = pocketBal.cashBal
+    var three = pocketBal.onlineBal
+
+    if ( is_credit ){
+      var one = pocketBal.currentBal - credit_amount
+
+      { credit_type==='cash' 
+          ? 
+        two = pocketBal.cashBal-credit_amount  
+          :
+        three = pocketBal.onlineBal-credit_amount 
+      }
+
+    }
+    else{
+     var one = pocketBal.currentBal + credit_amount
+
+     { credit_type==='cash' 
+         ? 
+       two = pocketBal.cashBal+credit_amount  
+         :
+       three = pocketBal.onlineBal+credit_amount 
+     }
+
+    }
+
+    queryExecutor( pocket.updatePocketQuery,
+                   [ one, two, three ],
+                   'Pocket-U',
+                   databaseData=>console.log('Checkout Homepage')
+                 )
+  }
+
+
+  const deleteCredit = ( itemId:number ) => {
+
     queryExecutor( credit.deleteCreditQuery, 
                    [itemId ],
                    'Credit-D',
-                   databaseData=>console.log('Return after del ',databaseData)
-    )
+                   databaseData=>{
+                     readingCredit(queryContainer.current)
+                     insertPocket( creditContainer.current.credit_amount,
+                                   creditContainer.current.is_credit,
+                                   creditContainer.current.credit_type
+                     )
+                   }
+                 )
   }
-
 
   const onRefresh = React.useCallback( ()=> {
    /*
@@ -90,10 +140,15 @@ const TransactionScreen = () => {
    setRefreshing(true)
    readingCredit(queryContainer.current)
    setRefreshing(false)
+
    console.log('You refresh the page actually.')
     
   },[refreshing] )
 
+
+  /*******************
+   * HELPER FUNCTION *
+   *******************/
 
   function actionDataSetter( isVisible        :boolean,
                              descriptionData  :string,
@@ -117,6 +172,29 @@ const TransactionScreen = () => {
         'Rs'
       )
     )
+  }
+
+  function onDeleteSetter( data:object ){
+    /*
+     * Setting State for
+     * Deleting Credit
+     */
+
+    setDeleteItem(
+      listItemMaker(
+        data.source_name+"'s",
+        data.id,
+        'Delete',
+        'Entry'
+      )
+    )
+    setShowDelete( true )
+
+    creditContainer.current = {
+      'credit_amount' : data.credit_amount,
+      'is_credit'     : data.is_credit,
+      'credit_type'   : data.credit_type,
+    }
   }
 
   useEffect( ()=> {
@@ -180,7 +258,7 @@ const TransactionScreen = () => {
               sheetData        = { deleteItem }
               sheetVisible     = { showDelete }
               setSheetVisible  = { (bool:boolean)=>setShowDelete(bool) }
-              sheetSelectedItem= { item=>console.log('You click delete button') }
+              sheetSelectedItem= { item=>deleteCredit(item.id) }
             />
 
             <FlatList 
@@ -196,26 +274,18 @@ const TransactionScreen = () => {
               renderItem={(element)=>{
 
                 return (
-                  <View style={styles.itemContainer}>
+                  <View style={[styles.itemContainer, reuseStyle.bgShadow ]}>
 
                     {/* Decide Icons */}
                     <TouchableOpacity 
-                      onPress={()=>
-                        { setDeleteItem(
-                            listItemMaker(
-                              element.item.source_name,
-                              element.item.id,
-                              'Delete',
-                            )
-                          )
-                          setShowDelete( true )
-                        }}>
+                      onPress={ ()=>onDeleteSetter(element.item) }>
 
                       <TransactionIcon 
                         source_name={element.item.source_name}
                         is_credit = {element.item.is_credit}
                       />
                     </TouchableOpacity>
+
                     <View style={{ 'alignItems' : 'flex-end' }}>
 
                       <Text style={ styles.itemStyle }>
@@ -223,11 +293,11 @@ const TransactionScreen = () => {
                       </Text>
             
                       <TouchableOpacity onPress={ ()=>{
-                                                   actionDataSetter(
-                                                     true,
-                                                     element.item.credit_description,
-                                                     element.item.credit_type,
-                                                     element.item.remain_bal,
+                                                  actionDataSetter(
+                                                    true,
+                                                    element.item.credit_description,
+                                                    element.item.credit_type,
+                                                    element.item.remain_bal,
                                                    )
                                                 }}>
                         <MaterialCommunityIcons 
@@ -264,11 +334,6 @@ const styles = StyleSheet.create({
     marginVertical : 10,
     borderRadius : 8,
     backgroundColor : '#ffe6b5',
-    shadowColor : 'black',
-    shadowOffset : { width:0, height:9 },
-    shadowOpacity : 0.9,
-    elevation : 4,
-    shadowRadius : 2,
     justifyContent : 'space-between',
   },
 

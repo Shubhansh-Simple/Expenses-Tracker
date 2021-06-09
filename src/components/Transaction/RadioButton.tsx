@@ -68,7 +68,6 @@ const RadioButton = ({ radioBtnClick }) => {
 const styles = StyleSheet.create({
   radioContainer : {
     flexDirection : 'row',
-    borderWidth : 2,
     backgroundColor : '#ffe6b5',
     borderColor : '#ffe6b5',
     borderRadius : 13,
