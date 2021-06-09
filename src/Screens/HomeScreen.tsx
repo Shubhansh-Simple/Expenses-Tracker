@@ -16,7 +16,7 @@ import { pocket, credit, source } from '../database_code/sqlQueries';
 import queryExecutor              from '../database_code/starterFunction';
 
 
-const HomeScreen = ()  =>  {
+const HomeScreen = ({navigation})  =>  {
 
   /*****************
    * REACT'S STATE *
@@ -91,7 +91,6 @@ const HomeScreen = ()  =>  {
      * current balance
      */
 
-
     if (credit_type==='cash' ){ 
       var cash2 =  is_credit ? currentCash+value : currentCash-value
       var cash3 =  is_credit ? currentOnline+0 : currentOnline-0
@@ -137,21 +136,32 @@ const HomeScreen = ()  =>  {
    */
     console.log('Inside useEffect of home.')
     readingPocket()
-    readingSource()
+
+    { modalCreditVisible || modalDebitVisible 
+        ?
+      readingSource()
+        : 
+      null
+    }
   }, [modalCreditVisible,modalDebitVisible])
+
+
+  useEffect( () => {
+    /*
+     * Update live pocket data 
+     * on changing navigation
+     */
+
+    const unsubscribe = navigation.addListener('focus', ()=>{
+      readingPocket()
+    })
+    return unsubscribe;
+  },[ navigation ])
 
 
   return (
     <View style={styles.homeStyle} >
 
-      <Text style={{ 
-        fontSize:40,
-        color : '#eda344',
-        fontStyle : 'italic',
-        fontWeight : '400',
-      }}>
-        Laxmi Tracker 
-      </Text>
       <FontAwesome5 
         name='comments-dollar' 
         size={110}
