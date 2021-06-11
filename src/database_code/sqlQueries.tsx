@@ -24,7 +24,7 @@ export const credit = {
                         'credit_type,is_credit,remain_bal,source_name '+
                         'FROM CREDIT JOIN SOURCE ON '+
                         'CREDIT.source_name_id=SOURCE.id WHERE is_credit!=',
-    _                 : ' ORDER BY CREDIT.ID DESC',
+    addOrdering       : ' ORDER BY CREDIT.ID DESC',
 }
 
 export const source = {

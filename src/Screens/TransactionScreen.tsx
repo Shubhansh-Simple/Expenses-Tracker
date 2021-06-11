@@ -9,17 +9,26 @@ import { View,
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
+import SegmentButton        from '../components/Transaction/SegmentButton';
+import { iconTitleSelector,
+         NoDataTitle,
+         nextIteration,
+         categoryQuerySelection
+       }                    from '../components/Transaction/CleanCode';
+
 // LOCAL
 import NoDataFound          from '../components/NoDataFound';
 import TransactionIcon      from '../components/Transaction/TransactionIcon';
 import ActionSheet          from '../components/ActionSheet';
-import RadioButton          from '../components/Transaction/RadioButton';
-import {listItemMaker}      from '../CleanCode/CleanCode';
 import flatListInterface    from '../Interfaces/Interface';
 import reuseStyle           from '../Styles/reuseStyle';
+import {listItemMaker}      from '../CleanCode/CleanCode';
 
-// DATABASE
-import { credit,pocket }    from '../database_code/sqlQueries';
+// DATABASE QUERY
+import { credit,  
+         pocket, 
+         source }    from '../database_code/sqlQueries';
+
 import queryExecutor        from '../database_code/starterFunction';
 
 
@@ -30,9 +39,22 @@ const TransactionScreen = () => {
    *****************/
 
   const [ refreshing, setRefreshing ]           = useState(false)
-  const [ creditData, setCreditData ]           = useState([]);
+  const [ creditData, setCreditData ]           = useState([])
   const [ showDescription, setShowDescription ] = useState(false) 
 
+ // FIRST SEGMENT BUTTON
+  const [ buttonId, setButtonId ] = useState('2')
+  const [ creditDebit, setCreditDebit ]   = useState({
+                                             'icon':'arrow-top-right-bottom-left',
+                                             'title' : 'All',
+                                           })
+
+  // SECOND SEGMENT BUTTON
+  const [ showSourceModal, setShowSourceModal ] = useState(false)
+  const [ sourceOptions, setSourceOptions ] = useState([])
+  const [ categortyTitle, setCategoryTitle ] = useState('Categories')
+
+  // DEL TRANSACTION
   const [ showDelete, setShowDelete ] = useState(false)
   const [ deleteItem, setDeleteItem ] = useState<flatListInterface[]>([])
 
@@ -42,6 +64,7 @@ const TransactionScreen = () => {
 
   const [ pocketBal, setPocketBal ]  = useState({})
 
+  
   const queryContainer  = useRef('')
   const creditContainer = useRef({})
 
@@ -50,17 +73,37 @@ const TransactionScreen = () => {
    * DATABASE FUNCTION *
    *********************/
 
-  const readingCredit = ( extraQuery:string ) => {
+  const readingCredit = ( creditDebitQuery : string,
+                          categoryQuery : number = 0 ) => {
       /*
        * READING TABLE 
        */
-      queryContainer.current = extraQuery
+      let completeCategoryQuery = categoryQuerySelection(categoryQuery)
+      queryContainer.current = creditDebitQuery
 
-      queryExecutor( credit.readCreditQuery + extraQuery + credit._,
+      queryExecutor( credit.readCreditQuery+ 
+                     creditDebitQuery+
+                     completeCategoryQuery+ 
+                     credit.addOrdering,
                      null,
                      'Credit-R',
                      databaseData=>setCreditData(databaseData)
                    )
+  }
+
+  const readingSource = () => {
+    /*
+  	 * READING FROM
+  	 * SOURCE TABLE
+  	 */
+
+    queryExecutor( source.readSourceQuery,
+                   null,
+                   'Source-R',
+                   databaseData=>setSourceOptions(
+                     listItemMaker('Categories', 0,).concat(databaseData) 
+                   ) 
+                 )
   }
 
   const readingPocket = () => {
@@ -83,38 +126,43 @@ const TransactionScreen = () => {
                          is_credit     : number,
                          credit_type   : string ) => {
 
-    var two   = pocketBal.cashBal
-    var three = pocketBal.onlineBal
+    /*
+     * UPDATING Pocket Data
+     * after deleting the transaction
+     */
+
+    var cashAmt   = pocketBal.cashBal
+    var onlineAmt = pocketBal.onlineBal
 
     if ( is_credit ){
-      var one = pocketBal.currentBal - credit_amount
+      var totalAmt = pocketBal.currentBal - credit_amount
 
       { credit_type==='cash' 
           ? 
-        two = pocketBal.cashBal-credit_amount  
+        cashAmt = pocketBal.cashBal-credit_amount  
           :
-        three = pocketBal.onlineBal-credit_amount 
+        onlineAmt = pocketBal.onlineBal-credit_amount 
       }
 
     }
     else{
-     var one = pocketBal.currentBal + credit_amount
+      var totalAmt = pocketBal.currentBal + credit_amount
 
-     { credit_type==='cash' 
-         ? 
-       two = pocketBal.cashBal+credit_amount  
-         :
-       three = pocketBal.onlineBal+credit_amount 
-     }
+      { credit_type==='cash' 
+          ? 
+        cashAmt = pocketBal.cashBal+credit_amount  
+          :
+        onlineAmt = pocketBal.onlineBal+credit_amount 
+      }
 
     }
 
     queryExecutor( pocket.updatePocketQuery,
-                   [ one, two, three ],
+                   [ totalAmt, cashAmt, onlineAmt ],
                    'Pocket-U',
                    databaseData=>console.log('Checkout Homepage')
                  )
-  }
+  } 
 
 
   const deleteCredit = ( itemId:number ) => {
@@ -132,9 +180,13 @@ const TransactionScreen = () => {
                  )
   }
 
+  /********************
+   * REFRESH FUNCTION *
+   ********************/
+
   const onRefresh = React.useCallback( ()=> {
    /*
-    * because we want the old query value
+    * because we want the old state query value
     * for refreshing the page.
     */
    setRefreshing(true)
@@ -197,15 +249,35 @@ const TransactionScreen = () => {
     }
   }
 
+  /***************
+   * USE EFFECTS *
+   ***************/
+
   useEffect( ()=> {
     /*
-     * we want all the data
+     * We want all the data
      * of transaction 
      * on first time
      * opening app
      */
     readingCredit('2')
   },[])
+
+
+  useEffect( ()=>{
+    /*
+     * Changing icons & title
+     * as per localStorage 
+     * button selected
+     */
+    queryContainer.current = buttonId 
+    setCreditDebit( 
+      iconTitleSelector(buttonId) 
+    )
+    readingCredit(buttonId)
+
+  },[buttonId])
+
 
   useEffect( ()=> {
     /*
@@ -217,21 +289,48 @@ const TransactionScreen = () => {
   },[showDelete])
 
 
+  useEffect( ()=> {
+    /*
+     * we want source data only
+     * on opening the Source ActionSheet
+     */
+    { showSourceModal ? readingSource() : null }
+    
+  },[ showSourceModal ])
+
+
   return (
     <View style={{ flex : 1}}>
       <View style={ styles.homeStyle }>
 
-        {/* SEGMENT BUTTON */}
-        <RadioButton 
-          radioBtnClick={ (id:string)=>readingCredit(id) }
-        />
+        {/* SEGMENT BUTTONS */}
+        <View style={ styles.segmentContainer }>
+          <SegmentButton 
+            segmentIcon={creditDebit.icon}
+            segmentName={creditDebit.title}
+            buttonId={buttonId}
+            callBack={ (id:string)=>setButtonId( nextIteration(id) ) }
+          />
+          <SegmentButton 
+            segmentIcon='account-supervisor-circle'
+            segmentName={categortyTitle}
+            buttonId={true}
+            callBack={ (id:boolean)=>setShowSourceModal(id) }
+          />
+          <SegmentButton 
+            segmentIcon='clock-time-eight-outline'
+            segmentName='Dates'
+            buttonId={2}
+            callBack={ ()=>{} }
+          />
+        </View>
 
         {/* CONDITIONAL CODE */}
         { creditData.length === 0 
             ?
           <NoDataFound 
-            dataTitle='No Transaction Found !'
-            dataDescription='Kindly add some data first'
+            dataTitle={ NoDataTitle(queryContainer.current) }
+            dataDescription='Kindly make a transaction first'
             emojiName='emoji-sad' 
             emojiSize={84}
             callBack={ ()=>readingCredit(queryContainer.current) }
@@ -260,6 +359,19 @@ const TransactionScreen = () => {
               sheetVisible     = { showDelete }
               setSheetVisible  = { (bool:boolean)=>setShowDelete(bool) }
               sheetSelectedItem= { item=>deleteCredit(item.id) }
+            />
+
+            {/* SOURCE SELECTION FOR FILTER */}
+            <ActionSheet 
+              sheetTitle        ='Choose a category'
+              sheetDescription  ='Filter the transaction as per source selected'
+              listItemColor     ='#0095ff'
+              sheetData         ={sourceOptions}
+              sheetVisible      ={showSourceModal}
+              setSheetVisible   ={ (bool:boolean)=>setShowSourceModal(bool) }
+              sheetSelectedItem ={ item=>{
+                setCategoryTitle(item.source_name.slice(0,15))
+              }}
             />
 
             <FlatList 
@@ -300,7 +412,7 @@ const TransactionScreen = () => {
                                                     element.item.credit_type,
                                                     element.item.remain_bal,
                                                    )
-                                                }}>
+                                               }}>
                         <MaterialCommunityIcons 
                           name="comment-eye-outline" 
                           size={24} 
@@ -347,10 +459,16 @@ const styles = StyleSheet.create({
     fontSize : 13,
     fontWeight : 'bold',
     textTransform : 'capitalize',
+  },
 
+  segmentContainer : {
+    flexDirection  : 'row',
+    justifyContent : 'space-around',
+    backgroundColor: 'white',
+    marginTop : 20,
+    borderRadius   : 30,
+    paddingTop : 3
   }
-
-
 });
 
 export default TransactionScreen;
