@@ -1,5 +1,7 @@
 /*
- * In this file, we write function
+ * In this file, Common requirement 
+ * through entire application 
+ * full by these functions
  * for making our real code more
  * readable and understandable.
  */
@@ -10,7 +12,7 @@ export function listItemMaker( item_name : string,
                                item_description_end   : string = '',
                              ) {
   /*
-   * this returns the items
+   * this returns the data
    * as per flatlist iteration
    */
   return [{
@@ -20,6 +22,7 @@ export function listItemMaker( item_name : string,
     id          : item_id
   }]
 }
+
 
 
 

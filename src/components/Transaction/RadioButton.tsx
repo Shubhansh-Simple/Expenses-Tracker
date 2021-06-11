@@ -38,28 +38,6 @@ const RadioButton = ({ radioBtnClick }) => {
                                    }}
       />
 
-      <RadioPerButton 
-        buttonId='0' 
-        buttonText='Credit'
-        isColorChange={colorTwo}
-        buttonClick={ (id:string)=>{ setColorOne(false)
-                                     setColorTwo(true)
-                                     setColorThree(false)
-                                     radioBtnClick(id)
-                                   }}      
-        />
-
-      <RadioPerButton 
-        buttonId='1' 
-        buttonText='Debit' 
-        isColorChange={colorThree}
-        buttonClick={ (id:string)=>{ setColorOne(false)
-                                     setColorTwo(false)
-                                     setColorThree(true)
-                                     radioBtnClick(id)
-                                   }}
-         
-      />
 
     </View>
   )
