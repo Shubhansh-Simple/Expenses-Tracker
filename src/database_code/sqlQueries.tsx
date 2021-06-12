@@ -23,8 +23,10 @@ export const credit = {
     readCreditQuery   : 'SELECT CREDIT.ID,credit_amount,credit_description,'+
                         'credit_type,is_credit,remain_bal,source_name '+
                         'FROM CREDIT JOIN SOURCE ON '+
-                        'CREDIT.source_name_id=SOURCE.id WHERE is_credit!=',
+                        'CREDIT.source_name_id=SOURCE.id WHERE is_credit!=' ,
+
     addOrdering       : ' ORDER BY CREDIT.ID DESC',
+
 }
 
 export const source = {

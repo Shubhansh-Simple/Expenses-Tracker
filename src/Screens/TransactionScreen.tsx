@@ -43,7 +43,7 @@ const TransactionScreen = () => {
   const [ showDescription, setShowDescription ] = useState(false) 
 
  // FIRST SEGMENT BUTTON
-  const [ buttonId, setButtonId ] = useState('2')
+  const [ buttonId, setButtonId ]         = useState('2')
   const [ creditDebit, setCreditDebit ]   = useState({
                                              'icon':'arrow-top-right-bottom-left',
                                              'title' : 'All',
@@ -51,8 +51,9 @@ const TransactionScreen = () => {
 
   // SECOND SEGMENT BUTTON
   const [ showSourceModal, setShowSourceModal ] = useState(false)
-  const [ sourceOptions, setSourceOptions ] = useState([])
-  const [ categortyTitle, setCategoryTitle ] = useState('Categories')
+  const [ sourceOptions, setSourceOptions ]     = useState([])
+  const [ categoryState, setCategoryState ]    = useState({ 'id'  : 0, 
+                                                'source_name' : 'All-Categories'})
 
   // DEL TRANSACTION
   const [ showDelete, setShowDelete ] = useState(false)
@@ -65,7 +66,7 @@ const TransactionScreen = () => {
   const [ pocketBal, setPocketBal ]  = useState({})
 
   
-  const queryContainer  = useRef('')
+  const queryContainer  = useRef(['2','0'])
   const creditContainer = useRef({})
 
 
@@ -73,17 +74,21 @@ const TransactionScreen = () => {
    * DATABASE FUNCTION *
    *********************/
 
-  const readingCredit = ( creditDebitQuery : string,
-                          categoryQuery : number = 0 ) => {
+  const readingCredit = ( creditDebitFilter : string,
+                          categoryFilter    : number = 0 ) => {
       /*
        * READING TABLE 
+       * as per filter
+       * applied
        */
-      let completeCategoryQuery = categoryQuerySelection(categoryQuery)
-      queryContainer.current = creditDebitQuery
+      let x : string[] = [creditDebitFilter, categoryFilter.toString() ]
+      queryContainer.current = x
 
-      queryExecutor( credit.readCreditQuery+ 
-                     creditDebitQuery+
-                     completeCategoryQuery+ 
+      let completeCategoryFilter = categoryQuerySelection(categoryFilter)
+
+      queryExecutor( credit.readCreditQuery + 
+                     creditDebitFilter      +
+                     completeCategoryFilter + 
                      credit.addOrdering,
                      null,
                      'Credit-R',
@@ -101,8 +106,8 @@ const TransactionScreen = () => {
                    null,
                    'Source-R',
                    databaseData=>setSourceOptions(
-                     listItemMaker('Categories', 0,).concat(databaseData) 
-                   ) 
+                            listItemMaker('All-Categories',0 ).concat(databaseData) 
+                                 )
                  )
   }
 
@@ -171,7 +176,9 @@ const TransactionScreen = () => {
                    [itemId ],
                    'Credit-D',
                    databaseData=>{
-                     readingCredit(queryContainer.current)
+                     readingCredit(queryContainer.current[0], 
+                                   Number(queryContainer.current[1])
+                                  )
                      insertPocket( creditContainer.current.credit_amount,
                                    creditContainer.current.is_credit,
                                    creditContainer.current.credit_type
@@ -190,7 +197,7 @@ const TransactionScreen = () => {
     * for refreshing the page.
     */
    setRefreshing(true)
-   readingCredit(queryContainer.current)
+   readingCredit(queryContainer.current[0],Number(queryContainer.current[1]))
    setRefreshing(false)
 
    console.log('You refresh the page actually.')
@@ -260,7 +267,8 @@ const TransactionScreen = () => {
      * on first time
      * opening app
      */
-    readingCredit('2')
+    readingCredit('2',0)
+
   },[])
 
 
@@ -270,14 +278,30 @@ const TransactionScreen = () => {
      * as per localStorage 
      * button selected
      */
-    queryContainer.current = buttonId 
+
+    queryContainer.current = [ buttonId, queryContainer.current[1]]
+
     setCreditDebit( 
       iconTitleSelector(buttonId) 
     )
-    readingCredit(buttonId)
+
+    readingCredit( buttonId,categoryState.id )
 
   },[buttonId])
 
+  useEffect( ()=>{
+    /*
+     * Changing title
+     * as per localStorage 
+     * button selected
+     */
+    
+    queryContainer.current = [ queryContainer.current[0], 
+                               categoryState.id ]
+
+    readingCredit( buttonId,categoryState.id )
+
+  },[categoryState])
 
   useEffect( ()=> {
     /*
@@ -303,6 +327,20 @@ const TransactionScreen = () => {
     <View style={{ flex : 1}}>
       <View style={ styles.homeStyle }>
 
+        {/* SOURCE SELECTION FOR FILTER */}
+        <ActionSheet 
+          sheetTitle        ='Choose a category'
+          sheetDescription  ='Filter the transaction as per source selected'
+          listItemColor     ='#0095ff'
+          sheetData         ={sourceOptions}
+          sheetVisible      ={showSourceModal}
+          setSheetVisible   ={ (bool:boolean)=>setShowSourceModal(bool) }
+          sheetSelectedItem ={ item=>{
+            console.log('The state is - ',item)
+            setCategoryState(item) }
+          }
+        />
+
         {/* SEGMENT BUTTONS */}
         <View style={ styles.segmentContainer }>
           <SegmentButton 
@@ -313,9 +351,9 @@ const TransactionScreen = () => {
           />
           <SegmentButton 
             segmentIcon='account-supervisor-circle'
-            segmentName={categortyTitle}
+            segmentName={categoryState.source_name.slice(0,15)}
             buttonId={true}
-            callBack={ (id:boolean)=>setShowSourceModal(id) }
+            callBack={ (bool:boolean)=>setShowSourceModal(bool) }
           />
           <SegmentButton 
             segmentIcon='clock-time-eight-outline'
@@ -329,11 +367,12 @@ const TransactionScreen = () => {
         { creditData.length === 0 
             ?
           <NoDataFound 
-            dataTitle={ NoDataTitle(queryContainer.current) }
+            dataTitle={ NoDataTitle(queryContainer.current[0]) }
             dataDescription='Kindly make a transaction first'
             emojiName='emoji-sad' 
             emojiSize={84}
-            callBack={ ()=>readingCredit(queryContainer.current) }
+            callBack={ ()=>readingCredit( queryContainer.current[0],
+                                          Number(queryContainer.current[1]) )}
           />
             :
 
@@ -359,19 +398,6 @@ const TransactionScreen = () => {
               sheetVisible     = { showDelete }
               setSheetVisible  = { (bool:boolean)=>setShowDelete(bool) }
               sheetSelectedItem= { item=>deleteCredit(item.id) }
-            />
-
-            {/* SOURCE SELECTION FOR FILTER */}
-            <ActionSheet 
-              sheetTitle        ='Choose a category'
-              sheetDescription  ='Filter the transaction as per source selected'
-              listItemColor     ='#0095ff'
-              sheetData         ={sourceOptions}
-              sheetVisible      ={showSourceModal}
-              setSheetVisible   ={ (bool:boolean)=>setShowSourceModal(bool) }
-              sheetSelectedItem ={ item=>{
-                setCategoryTitle(item.source_name.slice(0,15))
-              }}
             />
 
             <FlatList 

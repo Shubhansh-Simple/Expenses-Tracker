@@ -45,15 +45,16 @@ export function nextIteration( data:string ){
 
 export function categoryQuerySelection( data:number ){
   /*
-   *
+   * Return Query for filtering
+   * Transaction List as per
+   * category selection
    */
   if (data===0) {
     return ''
   }
   else{
-    return ' AND SOURCE_NAME_ID='+data.toString()
+    return ' AND CREDIT.source_name_id='+data.toString()
   }
-
 }
 
 
